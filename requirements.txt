@@ -21,9 +21,9 @@ numpy
 joblib
 scikit-learn
 
-# --- Generative AI & RAG ---
+# --- Generative AI & RAG (Ekosistem Lengkap) ---
 google-generativeai
-langchain==0.1.16
+langchain
 langchain-core
 langchain-community
 langchain-google-genai
