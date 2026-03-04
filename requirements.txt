@@ -1,4 +1,4 @@
-# --- Framework Web & Keamanan Dasar ---
+# --- Web & Database ---
 Flask
 Flask-Login
 Flask-Cors
@@ -7,33 +7,31 @@ Flask-SQLAlchemy
 Flask-Migrate
 python-dotenv
 Werkzeug
+psycopg2
 
 # --- Otentikasi & API ---
 Authlib
 google-auth
 requests
 
-# --- Database ---
-psycopg2
-
-# --- Machine Learning & AI (Generative AI & Computer Vision) ---
+# --- Machine Learning & Computer Vision ---
 tensorflow-cpu
 Pillow
 numpy
-google-generativeai
+joblib
+scikit-learn
 
-# --- RAG / Chatbot Langchain ---
+# --- Generative AI & RAG (Ekosistem Lengkap) ---
+google-generativeai
 langchain
 langchain-core
 langchain-community
+langchain-google-genai
+langchain-text-splitters
 rank_bm25
+pypdf
 
-# --- IoT Animatronic & Suara (Dengan pengaman di Cloud) ---
+# --- IoT & Audio ---
 pyserial
 edge-tts
 pygame
-
-joblib
-scikit-learn
-langchain-google-genai
-pypdf
