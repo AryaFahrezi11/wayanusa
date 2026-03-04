@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pertunjukan Wayang - WAYANUSA</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+
+    <!-- AOS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    {% include 'layouts/navbar.html' %}
+
+    <!-- HERO -->
+    <section class="quiz-section">
+        <div class="container">
+            <div class="quiz-content">
+                <p class="quiz-tag">🎥 PERTUNJUKAN WAYANG</p>
+                <h2 class="quiz-title">Kumpulan <span class="highlight">Video</span> Wayang</h2>
+                <p class="quiz-description">
+                    Tonton berbagai pertunjukan wayang pilihan, lengkap dengan kisah dan karakter yang memukau.
+                </p>
+
+                <!-- SEARCH -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <span class="search-icon">&#128269;</span>
+                        <input type="text" id="searchInput" placeholder="Cari video pertunjukan..." oninput="searchVideo()">
+                    </div>
+                </div>
+
+                <!-- VIDEO CARDS -->
+                <div class="quiz-cards" id="videoList">
+                    {% for v in videos %}
+                    <div class="quiz-card"
+                         data-title="{{ v.judul }}"
+                         onclick="goToVideo({{ v.id }})"
+                         data-aos="fade-up">
+
+                        <div class="quiz-card-content">
+                            <h3 class="quiz-level">{{ v.judul }}</h3>
+                            <p class="quiz-name">Pertunjukan Wayang</p>
+                            <p class="quiz-desc">Klik untuk menonton pertunjukan dari koleksi WAYANUSA.</p>
+                        </div>
+
+                        <img src="https://img.youtube.com/vi/{{ v.youtube_id }}/hqdefault.jpg"
+                             alt="{{ v.judul }}"
+                             class="quiz-image"
+                             style="object-fit: cover;">
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        function goToVideo(videoId) {
+            if (!{{ session.get('user_logged_in', False)|tojson }}) {
+                alert("Silakan login terlebih dahulu untuk menonton video.");
+                window.location.href = "{{ url_for('web.login_user') }}";
+                return;
+            }
+
+            window.location.href = "/pertunjukan_wayang/video/" + videoId;
+        }
+
+        function searchVideo() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const cards = document.querySelectorAll(".quiz-card");
+
+            cards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                card.style.display = title.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+
+</body>
+</html>

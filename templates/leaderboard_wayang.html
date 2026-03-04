@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Quiz Wayang - WAYANUSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard_wayang.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+
+</head>
+<body>
+    {% include 'layouts/navbar.html' %}
+
+    <section class="leaderboard-section">
+        <div class="container">
+            <div class="leaderboard-content">
+                <p class="leaderboard-tag">🏆 LEADERBOARD</p>
+                <h2 class="leaderboard-title">Leaderboard <span class="highlight">Quiz</span></h2>
+                <p class="leaderboard-description">
+                    Lihat peringkat pemain terbaik dalam quiz wayang kulit. Pilih level untuk melihat leaderboard spesifik.
+                </p>
+
+                <div class="level-selector">
+                    <select id="level-select">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+
+                <div id="podium" class="podium">
+                    <!-- Podium will be rendered here -->
+                </div>
+
+                <div class="leaderboard-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Nama Peserta</th>
+                                <th>Level Quiz</th>
+                                <th>Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody">
+                            <!-- Table rows will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="user-position" class="user-position">
+                    <!-- User position text will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+    <script src="{{ url_for('static', filename='js/leaderboard_wayang.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,969 @@
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
+:root {
+    --primary: #D4A373;       /* Emas Wayang */
+    --primary-dark: #B88656;  /* Emas Gelap */
+    --bg-dark: #121212;       /* Hitam Background */
+    --text-main: #333333;
+    --text-light: #888888;
+    --danger: #dc3545;
+    --success: #28a745;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    background-color: #000;
+    color: #333;
+    overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* =========================================
+   2. NAVBAR
+   ========================================= */
+/* =========================
+   NAVBAR BASE
+========================= */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* =========================
+   FLEX STRUCTURE
+========================= */
+
+
+
+/* MENU — selalu di tengah */
+
+
+/* LOGIN — selalu di kanan */
+
+
+/* =========================
+   MENU LINKS
+========================= */
+
+
+/* =========================
+   LOGO IMAGE
+========================= */
+.logo-image {
+    height: 40px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+}
+
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+
+
+
+/* =========================================
+   3. HERO SECTION
+   ========================================= */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #000 0%, #1A140B 100%);
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-text {
+    flex: 1;
+    max-width: 600px;
+}
+
+.hero-tag {
+    font-size: 18px;
+    color: #d4af37;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+.hero-title .highlight {
+    background: linear-gradient(45deg, #d4af37, #ffd700, #ffb347, #d4af37);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 40px;
+    line-height: 1.7;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 200px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 2px solid #ffd700;
+}
+
+.btn-secondary:hover {
+    background: #ffd700;
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wayang-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 215, 0, 0.1);
+    filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 0.2));
+}
+
+/* =========================================
+   4. ABOUT SECTION
+   ========================================= */
+.about {
+    background-color: #1A140B;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.about::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.about-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.about-tag {
+    font-size: 16px;
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.about-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 30px;
+    line-height: 1.2;
+}
+
+.about-title .highlight {
+    color: #d4af37;
+    position: relative;
+}
+
+.about-title .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #d4af37, #ffd700);
+    border-radius: 2px;
+}
+
+.about-description {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    margin-bottom: 60px;
+    line-height: 1.7;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    min-width: 200px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+}
+
+.stat-card:nth-child(2) { animation-delay: 0.8s; }
+.stat-card:nth-child(3) { animation-delay: 1s; }
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+}
+
+.stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #d4af37;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #ccc;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   5. FEATURES SECTION
+   ========================================= */
+.features {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.features::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.features-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+
+.features-tag {
+    font-size: 16px;
+    color: #d4af37;
+    margin-bottom: 20px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.features-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    margin-bottom: 30px;
+    line-height: 1.2;
+}
+
+.features-title .highlight {
+    color: #d4af37;
+}
+
+.features-description {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 60px;
+    line-height: 1.7;
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+}
+
+.feature-card:nth-child(2) { animation-delay: 0.8s; }
+.feature-card:nth-child(3) { animation-delay: 1s; }
+.feature-card:nth-child(4) { animation-delay: 1.2s; }
+
+.feature-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4);
+    border-color: #d4af37;
+}
+
+.feature-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.feature-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.feature-content {
+    padding: 30px;
+}
+
+.feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.feature-badge {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.1);
+    color: #d4af37;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.feature-description {
+    color: #ccc;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.feature-details p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.feature-details strong {
+    color: #f5f5f5;
+    font-weight: 600;
+}
+
+.feature-details p:last-child strong {
+    color: #ccc;
+}
+
+/* =========================================
+   6. DALANG SHOWCASE SECTION
+   ========================================= */
+.dalang-showcase {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.dalang-showcase::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.dalang-showcase-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+
+.dalang-showcase-tag {
+    font-size: 16px;
+    color: #d4af37;
+    margin-bottom: 20px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.dalang-showcase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 30px;
+    line-height: 1.2;
+}
+
+.dalang-showcase-title .highlight {
+    color: #d4af37;
+}
+
+.dalang-showcase-description {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 60px;
+    line-height: 1.7;
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dalang-list-section {
+    margin-bottom: 40px;
+}
+
+.dalang-list-section h3 {
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 40px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #d4af37;
+}
+
+.dalang-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dalang-card {
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.dalang-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+    border-color: #d4af37;
+}
+
+.dalang-photo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.dalang-info h4 {
+    margin: 0 0 8px 0;
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.dalang-info p {
+    margin: 4px 0;
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.dalang-info strong {
+    color: #d4af37;
+    font-weight: 500;
+}
+
+/* =========================================
+   7. CHATBOT STYLES (WEB & ARDUINO)
+   ========================================= */
+
+/* Tombol Floating */
+.chatbot-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #A3683C;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.chatbot-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.chatbot-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* Popup Window */
+.chat-popup {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 400px;
+    height: 550px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    display: none;
+    flex-direction: column;
+}
+
+.chat-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    display: flex !important;
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Header & Switch Mode */
+.chat-popup-header {
+    background: linear-gradient(135deg, #D4A373, #B88656);
+    color: white;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 20px 20px 0 0;
+}
+
+.chat-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.chat-popup-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.chat-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Switch Mode Buttons */
+.mode-switch-container {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 25px;
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.mode-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.mode-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.mode-btn.active {
+    background: white;
+    color: #B88656;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Chat Panel */
+#panelChat {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 350px;
+    background-color: #f8f9fa;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+.message p { margin: 0; font-size: 0.95rem; }
+
+.bot-message {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    align-self: flex-start;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+.user-message {
+    background-color: #A3683C;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+/* Wayang Panel */
+#panelWayang {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    overflow-y: auto;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#panelWayang img {
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 4px solid #D4A373;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#panelWayang h4 {
+    color: #6B4226;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+#panelWayang p {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* Port Selector */
+.port-selector {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+    width: 100%;
+    text-align: left;
+    border: 1px solid #eee;
+}
+
+.port-input-group { display: flex; gap: 8px; }
+
+.port-input-group select {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+    outline: none;
+    background-color: #fcfcfc;
+}
+
+.port-input-group button {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0 12px;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.port-input-group button:hover { background: #e0e0e0; color: #333; }
+
+/* Status Box */
+.status-box {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    border: 1px solid #eee;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+/* Input Area */
+.chat-input-area {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    background-color: white;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.chat-input-area input:focus {
+    border-color: #A3683C;
+    box-shadow: 0 0 0 2px rgba(163, 104, 60, 0.1);
+}
+
+.chat-input-area button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#sendButton { background: linear-gradient(135deg, #A3683C, #8B4513); color: white; }
+#sendButton:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(163, 104, 60, 0.3); }
+
+#micButton { background-color: #f0f0f0; color: #666; }
+#micButton:hover { background-color: #e0e0e0; }
+#micButton.listening {
+    background-color: #dc3545;
+    color: white;
+    animation: pulse-red 1.5s infinite;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* =========================================
+   8. RESPONSIVE DESIGN (GLOBAL)
+   ========================================= */
+@media (max-width: 768px) {
+    .hero-content { flex-direction: column; text-align: center; gap: 40px; }
+    .hero-title { font-size: 2.5rem; }
+    .btn { min-width: 180px; }
+    .wayang-image { max-width: 80%; }
+    .features-grid, .dalang-grid { grid-template-columns: 1fr; }
+    
+    /* Chatbot Mobile */
+    .chatbot-button { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+    .chatbot-icon { width: 26px; height: 26px; }
+    .chat-popup { bottom: 80px; right: 20px; width: 320px; height: 400px; }
+   
+}
+
+@media (max-width: 480px) {
+    .chatbot-button { bottom: 15px; right: 15px; width: 45px; height: 45px; }
+    .chatbot-icon { width: 22px; height: 22px; }
+    .chat-popup { bottom: 70px; right: 15px; width: 280px; height: 350px; }
+}
