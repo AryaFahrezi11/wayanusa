@@ -1,21 +1,34 @@
+# --- Framework Web & Keamanan Dasar ---
 Flask
-gunicorn
+Flask-Login
 Flask-Cors
-python-dotenv
-Werkzeug
+Flask-JWT-Extended
 Flask-SQLAlchemy
 Flask-Migrate
-Flask-JWT-Extended
+python-dotenv
+Werkzeug
+
+# --- Otentikasi & API ---
 Authlib
-psycopg2
+google-auth
 requests
+
+# --- Database ---
+psycopg2
+
+# --- Machine Learning & AI (Generative AI & Computer Vision) ---
 tensorflow-cpu
 Pillow
 numpy
 google-generativeai
+
+# --- RAG / Chatbot Langchain ---
 langchain
+langchain-core
 langchain-community
 rank_bm25
+
+# --- IoT Animatronic & Suara (Dengan pengaman di Cloud) ---
 pyserial
 edge-tts
 pygame
