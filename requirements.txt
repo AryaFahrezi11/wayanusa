@@ -32,3 +32,8 @@ rank_bm25
 pyserial
 edge-tts
 pygame
+
+joblib
+scikit-learn
+langchain-google-genai
+pypdf
