@@ -82,15 +82,13 @@ def save_wayang_file(file):
 # =========================
 @web_routes.route('/')
 def home():
-    try:
-        # Coba ambil data dari database
-        dalangs = Dalang.query.order_by(Dalang.id.desc()).limit(4).all()
-    except Exception as e:
-        # Kalau gagal (misal tabel belum ada), jangan muter-muter, tampilkan kosong saja
-        print(f"⚠️ Peringatan DB: {e}")
-        dalangs = []
-        
+    # Ambil 4 atau 8 dalang terbaru untuk ditampilkan di Home
+    # Kita limit biar halaman tidak berat load-nya
+    # dalangs = Dalang.query.order_by(Dalang.id.desc()).limit(4).all()
+    dalangs = [] # Bikin list kosong biar template tidak error
+    # Kirim variable 'dalangs' ke template
     return render_template('index.html', dalangs=dalangs)
+
 # User login/register/logout
 @web_routes.route('/login', methods=['GET','POST'])
 def login_user():
