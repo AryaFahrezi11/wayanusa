@@ -21,21 +21,25 @@ class RagService:
         self.retriever = None
         
         # 1. SETUP MODEL CHAT (Gemini)
-        # Kita pakai Gemini CUMA buat jawab pertanyaan, bukan buat ngolah database.
-        # JADI SANGAT HEMAT & JARANG KENA LIMIT.
         self.llm = ChatGoogleGenerativeAI(
             model="gemini-2.5-flash", 
             temperature=0.3,
             google_api_key=my_api_key
         )
         
-        # 2. LOAD / BUILD DATABASE (Otomatis & Cepat)
-        # Cek apakah sudah ada file database (format .pkl)
+        # 2. LOAD / BUILD DATABASE DENGAN SISTEM ANTI-CRASH (Try-Except)
         if os.path.exists("bm25_db.pkl"):
-            print("📂 Memuat database BM25 dari file lokal...")
-            with open("bm25_db.pkl", "rb") as f:
-                self.retriever = pickle.load(f)
-            self.create_qa_chain()
+            print("📂 File database BM25 ditemukan. Mencoba memuat...")
+            try:
+                with open("bm25_db.pkl", "rb") as f:
+                    self.retriever = pickle.load(f)
+                print("✅ Sukses memuat database BM25 lama.")
+                self.create_qa_chain()
+            except Exception as e:
+                # JIKA GAGAL (karena beda versi), LANGSUNG BUAT BARU
+                print(f"⚠️ Gagal memuat BM25 lama (Kemungkinan beda versi library). Error: {e}")
+                print("⚙️ Membangun ulang database baru...")
+                self.build_index()
         else:
             print("⚙️ Database belum ada. Membangun baru (Cepat)...")
             self.build_index()
@@ -53,8 +57,8 @@ class RagService:
         try:
             documents.extend(pdf_loader.load())
             documents.extend(txt_loader.load())
-        except:
-            pass
+        except Exception as e:
+            print(f"⚠️ Peringatan saat membaca dokumen: {e}")
 
         if not documents:
             print("❌ Data Kosong! Pastikan folder 'data_wayang' terisi.")
@@ -66,8 +70,6 @@ class RagService:
         print(f"📊 Total Data: {len(chunks)} chunks.")
 
         # --- BAGIAN AJAIB (BM25) ---
-        # Membuat pencari data berdasarkan kata kunci. 
-        # Tidak butuh API Key, Tidak butuh Internet.
         self.retriever = BM25Retriever.from_documents(chunks)
         self.retriever.k = 3  # Ambil 3 data teratas yang mirip
         
@@ -75,7 +77,7 @@ class RagService:
         with open("bm25_db.pkl", "wb") as f:
             pickle.dump(self.retriever, f)
             
-        print("✅ SUKSES! Database BM25 berhasil dibuat.")
+        print("✅ SUKSES! Database BM25 versi terbaru berhasil dibuat.")
         self.create_qa_chain()
 
     def create_qa_chain(self):
@@ -105,7 +107,6 @@ class RagService:
         if not self.qa_chain:
             return "⚠️ Database error."
         try:
-            # Panggil Gemini cuma pas user nanya
             result = self.qa_chain.invoke({"query": query})
             return result.get("result", "Error.")
         except Exception as e:
