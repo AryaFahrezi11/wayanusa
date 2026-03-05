@@ -67,6 +67,15 @@ login_manager.login_message_category = "warning"
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# 🌟 JALUR RAHASIA UNTUK MEMBANGUN DATABASE
+@app.route('/setup-db')
+def setup_database():
+    try:
+        db.create_all()
+        return "✅ ALHAMDULILLAH! Seluruh tabel Supabase berhasil dibangun!"
+    except Exception as e:
+        return f"❌ GAGAL MEMBANGUN DATABASE: {str(e)}"
+
 # 4. REGISTER BLUEPRINTS
 app.register_blueprint(web_bp) 
 app.register_blueprint(api, url_prefix='/api')
@@ -77,10 +86,6 @@ app.register_blueprint(leaderboard_wayang_bp)
 
 # 5. RUN SERVER
 if __name__ == "__main__":
-    with app.app_context():
-        # Membuat tabel otomatis di Supabase
-        db.create_all()
-
     try:
         init_ai_model(app)
     except Exception as e:
