@@ -22,13 +22,6 @@ from routes.leaderboard_wayang_routes import leaderboard_wayang_bp
 load_dotenv()
 
 app = Flask(__name__)
-@app.route('/')
-def home():
-    return {
-        "status": "success",
-        "message": "🚀 Backend API Wayanusa Menyala Abangku!",
-        "version": "2.0"
-    }
 
 # 2. CONFIG
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY", "rahasia_super_aman")
@@ -60,7 +53,7 @@ login_manager.init_app(app)
 
 # Pastikan nama fungsi login sesuai dengan yang ada di web_routes.py
 # Kalau di web_routes namanya 'def login_user_route', pakai ini:
-login_manager.login_view = 'web.login_user_route' 
+login_manager.login_view = 'web.login_user' 
 login_manager.login_message = "Silakan login dulu."
 login_manager.login_message_category = "warning"
 
