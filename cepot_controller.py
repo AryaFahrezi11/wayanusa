@@ -3,15 +3,13 @@ import time
 import serial
 import asyncio
 import threading
-import pygame
 import edge_tts
 import google.generativeai as genai
 import re
 import serial.tools.list_ports
 
-
 # ==============================
-# KONFIGURASI (DIAMBIL DARI FILE KAMU)
+# KONFIGURASI 
 # ==============================
 
 VOICE = "jv-ID-DimasNeural"
@@ -19,7 +17,8 @@ SPEAK_SPEED = "-10%"
 SPEAK_PITCH = "+10Hz"
 
 BAUD_RATE = 9600
-AUDIO_FILE = "voice_tegal.mp3"
+# Simpan audio di folder static agar bisa diakses browser
+AUDIO_FILE = "static/uploads/voice_tegal.mp3" 
 
 # Gemini
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -34,25 +33,21 @@ def clean_tts_text(text):
     return re.sub(r"[^\w\s,.!?]", "", text).strip()
 
 # ==============================
-# CEPOT CONTROLLER
+# CEPOT CONTROLLER (CLOUD VERSION)
 # ==============================
 
 class CepotController:
     def __init__(self):
         self.ser = None
         self.is_connected = False
-
-        try:
-            pygame.mixer.quit()
-            pygame.mixer.init(frequency=24000)
-            print("✅ Audio System Ready")
-        except Exception as e:
-            print("⚠️ Audio init error:", e)
+        print("✅ Audio Generator System Ready (Headless / Cloud Mode)")
+        
+        # Buat folder jika belum ada
+        os.makedirs("static/uploads", exist_ok=True)
 
     # ==========================
-    # SERIAL
+    # SERIAL (Arduino)
     # ==========================
-
     def connect(self, port):
         try:
             self.ser = serial.Serial(port, BAUD_RATE, timeout=5)
@@ -70,9 +65,8 @@ class CepotController:
         return True, "Arduino terputus"
 
     # ==========================
-    # EDGE TTS (SESUAI FILE ASLI)
+    # EDGE TTS
     # ==========================
-
     async def bicara_async(self, teks):
         communicate = edge_tts.Communicate(
             teks,
@@ -81,7 +75,6 @@ class CepotController:
             pitch=SPEAK_PITCH
         )
 
-        # MODE STREAM (LEBIH TAHAN FIREWALL)
         with open(AUDIO_FILE, "wb") as f:
             async for chunk in communicate.stream():
                 if chunk["type"] == "audio":
@@ -92,22 +85,18 @@ class CepotController:
     # ==========================
     # SUARA + GERAK
     # ==========================
-
     def bicara_dan_gerak(self, teks):
         teks = clean_tts_text(teks)
         print(f"🤖 Wayang: {teks}")
 
+        # Hapus file audio lama jika ada
         try:
-            if pygame.mixer.music.get_busy():
-                pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
-
             if os.path.exists(AUDIO_FILE):
                 os.remove(AUDIO_FILE)
-                time.sleep(0.1)
         except:
             pass
 
+        # Generate Audio MP3 baru menggunakan Edge TTS
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         sukses = loop.run_until_complete(self.bicara_async(teks))
@@ -117,30 +106,27 @@ class CepotController:
             print("❌ TTS gagal total")
             return
 
+        print("✅ File Audio berhasil di-generate di server!")
+
+        # KODE ARDUINO (Akan diabaikan di Cloud, berguna jika di-run lokal)
         try:
             if self.is_connected and self.ser:
                 self.ser.write(b'T')
-
-            pygame.mixer.music.load(AUDIO_FILE)
-            pygame.mixer.music.play()
-
-            while pygame.mixer.music.get_busy():
-                time.sleep(0.1)
-
-            pygame.mixer.music.unload()
-
-            if self.is_connected and self.ser:
+                
+                # Simulasi waktu tunggu berdasarkan panjang teks
+                estimated_duration = len(teks) * 0.08 
+                time.sleep(estimated_duration)
+                
                 self.ser.write(b'S')
 
         except Exception as e:
-            print("❌ Audio error:", e)
+            print("⚠️ Arduino error (Abaikan jika di server):", e)
             if self.ser:
                 self.ser.write(b'S')
 
     # ==========================
     # API TALK (FLASK)
     # ==========================
-
     def talk(self, user_text):
         PROMPT_TEGAL = (
             "Kamu adalah Cepot versi Tegal. "
@@ -159,6 +145,7 @@ class CepotController:
 
             reply = response.text.strip() if response and response.text else "Inyong ora mudeng, Rika."
 
+            # Jalankan TTS di thread terpisah agar tidak bikin web lemot
             threading.Thread(
                 target=self.bicara_dan_gerak,
                 args=(reply,),
@@ -178,10 +165,7 @@ class CepotController:
     def process_physical_interaction(self, user_text):
         return self.talk(user_text)
 
-
-
 # ==============================
 # INSTANCE GLOBAL
 # ==============================
-
 cepot_system = CepotController()
