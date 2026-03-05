@@ -84,8 +84,8 @@ def save_wayang_file(file):
 def home():
     # Ambil 4 atau 8 dalang terbaru untuk ditampilkan di Home
     # Kita limit biar halaman tidak berat load-nya
-    # dalangs = Dalang.query.order_by(Dalang.id.desc()).limit(4).all()
-    dalangs = [] # Bikin list kosong biar template tidak error
+    dalangs = Dalang.query.order_by(Dalang.id.desc()).limit(4).all()
+    # dalangs = [] # Bikin list kosong biar template tidak error
     # Kirim variable 'dalangs' ke template
     return render_template('index.html', dalangs=dalangs)
 
