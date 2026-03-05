@@ -22,6 +22,13 @@ from routes.leaderboard_wayang_routes import leaderboard_wayang_bp
 load_dotenv()
 
 app = Flask(__name__)
+@app.route('/')
+def home():
+    return {
+        "status": "success",
+        "message": "🚀 Backend API Wayanusa Menyala Abangku!",
+        "version": "2.0"
+    }
 
 # 2. CONFIG
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY", "rahasia_super_aman")
