@@ -81,4 +81,4 @@ if __name__ == "__main__":
         print(f"⚠️ Warning AI: {e}")
 
     print("🚀 Server Jalan di Port 8000...")
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=7860)
