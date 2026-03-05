@@ -30,3 +30,4 @@ pypdf
 pyserial
 edge-tts
 pygame
+pg8000
