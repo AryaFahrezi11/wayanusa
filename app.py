@@ -7,6 +7,8 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
+# 🔥 TAMBAHKAN BARIS INI UNTUK MEMATIKAN ANTREAN LOKAL
+from sqlalchemy.pool import NullPool
 # Import Models
 from models import db, User 
 from ai_manager import init_ai_model
@@ -31,6 +33,11 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['UPLOAD_FOTO'] = 'static/uploads/profile_pics'
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt_fallback")
+
+# 🔥 TAMBAHKAN BARIS INI (Wajib untuk Supabase Pooler Port 6543)
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'poolclass': NullPool}
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Config Sesi (Penting biar gak logout sendiri)
 app.config['SESSION_COOKIE_HTTPONLY'] = True
