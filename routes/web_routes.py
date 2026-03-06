@@ -91,6 +91,11 @@ def home():
         dalangs = []
         
     return render_template('index.html', dalangs=dalangs)
+
+@web_routes.route('/robots.txt')
+def robots():
+    return send_from_directory(current_app.config.get('STATIC_FOLDER', 'static'), 'robots.txt')
+
 # User login/register/logout
 @web_routes.route('/login', methods=['GET','POST'])
 def login_user():
