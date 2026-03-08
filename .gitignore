@@ -3,6 +3,5 @@ __pycache__/
 *.pyc
 instance/
 .env
-static/uploads/
 static/models_storage/
 ngrok.exe 
