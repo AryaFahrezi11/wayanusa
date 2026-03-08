@@ -3,39 +3,53 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Panggung Dalang</title>
+    <title>Panggung Dalang - Wayanusa</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* =========================================
+           1. LAYOUT DASAR
+           ========================================= */
         body {
             margin: 0;
-            background: #000;
-            font-family: sans-serif;
+            background: #050505;
+            font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            user-select: none; /* Mencegah teks ter-highlight saat nge-drag */
         }
 
         .panggung {
             position: absolute;
             inset: 0;
             background: url("{{ url_for('static', filename='images/panggung.jpg') }}") center/cover no-repeat;
-            filter: brightness(0.85);
+            filter: brightness(0.6);
             z-index: 1;
         }
 
+        /* =========================================
+           2. AREA PANGGUNG & TIRAI
+           ========================================= */
         .stage-area {
             position: absolute;
             top: 12vh;
             left: 50%;
             transform: translateX(-50%);
-            width: 70vw;
-            height: 55vh;
-            background: rgba(255, 240, 200, 0.7);
-            border: 4px solid #b88a33;
-            border-radius: 12px;
+            width: 75vw;
+            height: 60vh;
+            background: radial-gradient(circle at 50% 100%, rgba(255, 230, 180, 0.8) 0%, rgba(150, 100, 50, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%);
+            border: 6px solid #8B5A2B;
+            border-bottom: 15px solid #5C3A21;
+            border-radius: 8px 8px 2px 2px;
             overflow: hidden;
             z-index: 3;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6) inset,
-                0 0 25px rgba(255, 200, 150, 0.4);
+            box-shadow: 
+                0 0 50px rgba(0, 0, 0, 0.9) inset,
+                0 0 30px rgba(212, 163, 115, 0.3),
+                0 20px 40px rgba(0, 0, 0, 0.8);
         }
 
         .tirai-area {
@@ -44,51 +58,123 @@
             background: url("{{ url_for('static', filename='images/tirai2.png') }}") center/cover no-repeat;
             z-index: 10;
             pointer-events: none;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
         }
 
+        /* =========================================
+           3. UI CONTROLS (TOMBOL & TONG SAMPAH)
+           ========================================= */
         .btn-add {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: #ffffff;
+            bottom: 30px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #D4A373, #B88656);
             border: none;
-            padding: 10px 20px;
-            font-size: 22px;
-            border-radius: 10px;
+            border-radius: 50%;
             cursor: pointer;
-            color: #000;
-            font-weight: bold;
+            color: #111;
+            font-size: 24px;
             z-index: 60;
+            box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .btn-add:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(212, 163, 115, 0.6);
+            color: #fff;
+        }
+
+        .trash-bin {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 50px;
+            height: 50px;
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #888;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            pointer-events: auto;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(5px);
+        }
+
+        .trash-bin.active {
+            background: rgba(220, 53, 69, 0.9);
+            border-color: #ffaaaa;
+            color: #fff;
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.6);
+        }
+
+        /* =========================================
+           4. LACI WAYANG (DRAWER)
+           ========================================= */
         .wayang-list {
             position: fixed;
-            bottom: 80px;
+            bottom: 30px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(150%);
             display: flex;
-            gap: 10px;
+            gap: 15px;
             overflow-x: auto;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 50;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 20px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+            max-width: 70vw;
+        }
+
+        .wayang-list::-webkit-scrollbar {
+            height: 6px;
+        }
+        .wayang-list::-webkit-scrollbar-thumb {
+            background: #D4A373;
+            border-radius: 10px;
         }
 
         .wayang-list.show {
             opacity: 1;
             pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
         }
 
         .wayang-slot {
-            width: 80px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #d4a23a;
-            border-radius: 10px;
+            width: 90px;
+            height: 130px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 163, 115, 0.5);
+            border-radius: 12px;
             overflow: hidden;
             flex-shrink: 0;
             cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .wayang-slot:hover {
+            transform: translateY(-8px);
+            border-color: #D4A373;
+            box-shadow: 0 10px 20px rgba(212, 163, 115, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .wayang-slot img {
@@ -96,38 +182,24 @@
             height: 100%;
             object-fit: contain;
             pointer-events: none;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
         }
 
-        .trash-bin {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            width: 60px;
-            height: 60px;
-            background: rgba(200, 0, 0, 0.7);
-            border: 3px solid #ffaaaa;
-            border-radius: 12px;
-            font-size: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            pointer-events: auto;
-            transition: background 0.3s, transform 0.2s;
-            user-select: none;
-        }
-
-        .trash-bin.active {
-            background: rgba(255, 0, 0, 0.9);
-            transform: scale(1.1);
-        }
-
-        /* Wayang styling */
+        /* =========================================
+           5. WAYANG FISIK DI PANGGUNG
+           ========================================= */
         .wayang {
             position: absolute;
             width: 260px;
             height: 420px;
             cursor: grab;
+            filter: drop-shadow(5px 15px 10px rgba(0,0,0,0.6));
+            transition: filter 0.2s;
+        }
+
+        .wayang:active {
+            cursor: grabbing;
+            filter: drop-shadow(15px 25px 15px rgba(0,0,0,0.4));
         }
 
         .wayang .badan {
@@ -150,7 +222,7 @@
             width: 60px;
             height: 120px;
             transform-origin: 37px 7px;
-            cursor: grab;
+            cursor: pointer;
         }
 
         .wayang .lengan-atas img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
@@ -162,7 +234,7 @@
             width: 80px;
             height: 130px;
             transform-origin: 30px 4px;
-            cursor: grab;
+            cursor: pointer;
         }
 
         .wayang .lengan-bawah img {
@@ -184,7 +256,7 @@
 
     <div class="stage-area" id="stageArea">
         <div class="tirai-area"></div>
-        <div class="trash-bin" id="trashBin">🗑️</div>
+        <div class="trash-bin" id="trashBin"><i class="fas fa-trash-alt"></i></div>
     </div>
 
     <div class="wayang-list" id="wayangList">
@@ -201,7 +273,7 @@
         {% endfor %}
     </div>
 
-    <button class="btn-add" id="btnAdd">+</button>
+    <button class="btn-add" id="btnAdd"><i class="fas fa-box-open"></i></button>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -209,15 +281,31 @@
             const trash = document.getElementById("trashBin");
             const btnAdd = document.getElementById("btnAdd");
             const wayangList = document.getElementById("wayangList");
-
             let draggedSlot = null;
 
+            // Toggle Laci
             btnAdd.onclick = () => {
                 wayangList.classList.toggle("show");
+                // Ganti icon saat buka/tutup
+                if(wayangList.classList.contains("show")) {
+                    btnAdd.innerHTML = '<i class="fas fa-times"></i>';
+                } else {
+                    btnAdd.innerHTML = '<i class="fas fa-box-open"></i>';
+                }
             };
 
+            // Setup Dragging Slot
             document.querySelectorAll(".wayang-slot").forEach(slot => {
-                slot.addEventListener("dragstart", () => { draggedSlot = slot; });
+                // 1. Saat mulai ditarik, biarkan laci tetap terbuka
+                slot.addEventListener("dragstart", (e) => { 
+                    draggedSlot = slot; 
+                });
+
+                // 2. Saat tarikan selesai (wayang dilepas ke panggung), baru lacinya ditutup
+                slot.addEventListener("dragend", () => {
+                    wayangList.classList.remove("show");
+                    btnAdd.innerHTML = '<i class="fas fa-box-open"></i>';
+                });
             });
 
             stage.addEventListener("dragover", e => e.preventDefault());
@@ -261,18 +349,19 @@
 
                 draggedSlot = null;
 
-                // pose awal
+                // Pose Awal
                 const tKA = wayang.querySelector('.tangan.kanan .lengan-atas');
                 const tKB = wayang.querySelector('.tangan.kanan .lengan-bawah');
                 const tLA = wayang.querySelector('.tangan.kiri .lengan-atas');
                 const tLB = wayang.querySelector('.tangan.kiri .lengan-bawah');
 
-                tKA.style.transform  = 'rotate(-35deg)';
-                tKB.style.transform = 'rotate(-55deg)';
-                tLA.style.transform  = 'rotate(25deg)';
-                tLB.style.transform  = 'rotate(35deg)';
+                if(tKA) tKA.style.transform  = 'rotate(-35deg)';
+                if(tKB) tKB.style.transform = 'rotate(-55deg)';
+                if(tLA) tLA.style.transform  = 'rotate(25deg)';
+                if(tLB) tLB.style.transform  = 'rotate(35deg)';
             });
 
+            // LOGIKA DRAG & DROP DALAM PANGGUNG (Tidak diubah, murni buatan Mas)
             function enableStageDrag(el) {
                 let isDrag = false, offsetX = 0, offsetY = 0;
                 el.addEventListener("mousedown", e => {
@@ -304,6 +393,7 @@
                 }
             }
 
+            // LOGIKA ROTASI SENDI (Tidak diubah)
             function aktifkanRotasiTangan(wayang) {
                 wayang.querySelectorAll('.lengan-atas').forEach(atas => {
                     const bawah = atas.querySelector('.lengan-bawah');
@@ -333,7 +423,8 @@
 
             function isOverTrash(el){
                 const w=el.getBoundingClientRect(), t=trash.getBoundingClientRect();
-                return !(w.right<t.left||w.left>t.right||w.bottom<t.top||w.top>t.bottom);
+                // Memberi sedikit margin agar lebih pas
+                return !(w.right < t.left - 20 || w.left > t.right + 20 || w.bottom < t.top - 20 || w.top > t.bottom + 20);
             }
 
             function fallDown(el){

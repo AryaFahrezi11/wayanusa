@@ -83,14 +83,16 @@ def save_wayang_file(file):
 @web_routes.route('/')
 def home():
     try:
-        # Coba ambil data dari database
+        # Ambil 4 dalang terbaru
         dalangs = Dalang.query.order_by(Dalang.id.desc()).limit(4).all()
+        # Ambil 3 ulasan terbaru untuk ditampilkan di Home
+        ulasan_list = UlasanAplikasi.query.order_by(UlasanAplikasi.created_at.desc()).limit(3).all()
     except Exception as e:
-        # Kalau gagal (misal tabel belum ada), jangan muter-muter, tampilkan kosong saja
         print(f"⚠️ Peringatan DB: {e}")
         dalangs = []
+        ulasan_list = []
         
-    return render_template('index.html', dalangs=dalangs)
+    return render_template('index.html', dalangs=dalangs, ulasan_list=ulasan_list)
 
 @web_routes.route('/robots.txt')
 def robots():

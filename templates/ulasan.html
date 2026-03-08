@@ -113,7 +113,7 @@
     <footer style="background: #000; color: #666; padding: 40px 0; text-align: center; border-top: 1px solid #222;">
         <div class="container" style="max-width: 1200px; margin: 0 auto;">
             <p style="margin-bottom: 10px; font-weight: 600; color: #ccc; letter-spacing: 2px;">WAYANUSA</p>
-            <p style="font-size: 0.85rem;">&copy; 2024 Melestarikan Budaya dengan Teknologi.</p>
+            <p style="font-size: 0.85rem;">&copy; 2026 Melestarikan Budaya dengan Teknologi.</p>
         </div>
     </footer>
 
@@ -217,6 +217,71 @@
                     }
                 });
             }
+        });
+    </script>
+    {% include 'components/chatbot.html' %}
+
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script>
+        AOS.init({ once: true, offset: 100, duration: 800 });
+
+        // Counter Animation
+        const statsSection = document.getElementById('statsSection');
+        const counters = document.querySelectorAll('.counter');
+        let started = false;
+
+        function startCounting() {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        if (statsSection) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !started) {
+                        startCounting(); started = true;
+                    }
+                });
+            }, { threshold: 0.5 });
+            observer.observe(statsSection);
+        }
+
+        // SCROLL SPY LOGIC
+        const sections = document.querySelectorAll('section, main');
+        const navLinks = document.querySelectorAll('.taskbar-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 300)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>
