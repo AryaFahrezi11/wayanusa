@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -12,11 +12,9 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/wayang.css') }}"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-    <title>Wayanusa - Belajar & Eksplorasi Wayang Kulit Nusantara</title>
     <meta name="description"
         content="Wayanusa adalah aplikasi edukasi interaktif untuk mengenal budaya Wayang Kulit, mencari profil Dalang, menonton pertunjukan, hingga ngobrol langsung dengan AI Cepot.">
     <meta name="keywords"
@@ -47,7 +45,6 @@
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* 🔥 FIX: Scroll Smooth ditaruh di sini agar jalan di semua layar 🔥 */
         html {
             scroll-behavior: smooth !important;
         }
@@ -427,12 +424,12 @@
             }
         }
 
-        .mobile-content {
+        .mobile-content,
+        .mobile-image {
             z-index: 2;
         }
 
         .mobile-image {
-            z-index: 2;
             text-align: center;
         }
 
@@ -753,7 +750,9 @@
             border-radius: 50%;
         }
 
-        /* RESPONSIVE */
+        /* =========================================
+           RESPONSIVE MOBILE 
+           ========================================= */
         @media (max-width: 992px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -807,6 +806,65 @@
             .footer-bottom {
                 flex-direction: column;
                 gap: 10px;
+            }
+        }
+
+        /* 🔥 FIX: KHUSUS LAYAR HP (Smartphone) 🔥 */
+        @media (max-width: 768px) {
+            section {
+                padding: 50px 0;
+            }
+
+            /* Jarak antar section diperkecil */
+            .hero {
+                padding-top: 100px;
+                min-height: auto;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .stat-item h3 {
+                font-size: 2rem;
+            }
+
+            /* Ubah Grid menjadi 1 kolom sejajar ke bawah */
+            .features-grid,
+            .testi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-card {
+                padding: 30px 20px;
+            }
+
+            .cta-footer {
+                padding: 60px 0;
+            }
+
+            .cta-footer h2 {
+                font-size: 1.8rem !important;
+            }
+
+            /* Taskbar bawah dirapikan biar gak numpuk di HP */
+            .taskbar-container {
+                width: 90%;
+            }
+
+            .taskbar {
+                padding: 10px 15px;
+                gap: 10px;
+                justify-content: space-between;
+                /* Menyebar rata */
+            }
+
+            .taskbar-item span {
+                font-size: 0.65rem;
+            }
+
+            .taskbar-item i {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -1150,24 +1208,33 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
     <script>
-        AOS.init({ once: true, offset: 100, duration: 800 });
+        // 🔥 INI KUNCINYA: once diubah jadi false 🔥
+        AOS.init({
+            once: false,
+            offset: 50, // Offset diperkecil agar di HP lebih responsif munculnya
+            duration: 800
+        });
 
-        // Counter Animation
+        // Counter Animation Berulang (Mulai dari 0 setiap di-scroll)
         const statsSection = document.getElementById('statsSection');
         const counters = document.querySelectorAll('.counter');
-        let started = false;
+        let isAnimating = false;
 
         function startCounting() {
             counters.forEach(counter => {
                 const target = +counter.getAttribute('data-target');
-                const duration = 2000;
+                const duration = 2000; // Durasi animasi 2 detik
                 const increment = target / (duration / 16);
                 let current = 0;
+
+                // Hapus animasi sebelumnya jika masih berjalan (mencegah bug angka loncat-loncat)
+                cancelAnimationFrame(counter.animationFrame);
+
                 const updateCounter = () => {
                     current += increment;
                     if (current < target) {
                         counter.innerText = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
+                        counter.animationFrame = requestAnimationFrame(updateCounter);
                     } else {
                         counter.innerText = target;
                     }
@@ -1179,11 +1246,20 @@
         if (statsSection) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting && !started) {
-                        startCounting(); started = true;
+                    if (entry.isIntersecting) {
+                        // Saat muncul di layar, mulai menghitung jika belum jalan
+                        if (!isAnimating) {
+                            isAnimating = true;
+                            // Kembalikan ke 0 dulu sebelum mulai
+                            counters.forEach(c => c.innerText = '0');
+                            startCounting();
+                        }
+                    } else {
+                        // Saat keluar dari layar, reset status agar nanti bisa menghitung lagi
+                        isAnimating = false;
                     }
                 });
-            }, { threshold: 0.5 });
+            }, { threshold: 0.2 }); // Akan memicu animasi saat 20% bagiannya terlihat
             observer.observe(statsSection);
         }
 
