@@ -597,5 +597,26 @@
     .slider.round:before {
         border-radius: 50%;
     }
+
+    /* =========================================
+       🔥 FIX WARNA TEKS BOCOR DARI HOME 🔥
+       ========================================= */
+    #chatbot-wrapper p {
+        color: #333 !important; /* Paksa hitam untuk paragraf bot */
+        margin: 0 0 5px 0; /* Reset margin bawaan dari luar */
+    }
     
+    .user-bubble p {
+        color: #fff !important; /* Teks balasan user tetap putih */
+    }
+    
+    #chatbot-wrapper span.message-time, 
+    #chatbot-wrapper div.chat-branding {
+        color: #888 !important; /* Warna abu-abu untuk waktu dan tulisan 'Powered by' */
+    }
+
+    .chat-header h3, 
+    .chat-header span {
+        color: #fff !important; /* Header (Cepot AI) tetap putih */
+    }
 </style>
