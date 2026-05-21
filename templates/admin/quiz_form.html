@@ -96,10 +96,10 @@
                                 <label for="correct_answer">Jawaban Benar</label>
                                 <select class="form-control" id="correct_answer" name="correct_answer" required>
                                     <option value="">Pilih Jawaban Benar</option>
-                                    <option value="A" {% if question and question.correct_answer == 'A' %}selected{% endif %}>A</option>
-                                    <option value="B" {% if question and question.correct_answer == 'B' %}selected{% endif %}>B</option>
-                                    <option value="C" {% if question and question.correct_answer == 'C' %}selected{% endif %}>C</option>
-                                    <option value="D" {% if question and question.correct_answer == 'D' %}selected{% endif %}>D</option>
+                                    <option value="A" {% if question and question.correct_answer.upper() == 'A' %}selected{% endif %}>A</option>
+                                    <option value="B" {% if question and question.correct_answer.upper() == 'B' %}selected{% endif %}>B</option>
+                                    <option value="C" {% if question and question.correct_answer.upper() == 'C' %}selected{% endif %}>C</option>
+                                    <option value="D" {% if question and question.correct_answer.upper() == 'D' %}selected{% endif %}>D</option>
                                 </select>
                             </div>
 

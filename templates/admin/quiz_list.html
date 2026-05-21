@@ -135,9 +135,9 @@
                             {% for key, opt in [('A', q.option_a), ('B', q.option_b), ('C', q.option_c), ('D', q.option_d)] %}
                             <div class="col-md-3 mb-2">
                                 <div class="p-2 border rounded bg-white
-                                    {{ 'border-success shadow-sm' if q.correct_answer == key else '' }}">
+                                    {{ 'border-success shadow-sm' if q.correct_answer.upper() == key.upper() else '' }}">
                                     <span class="badge
-                                        {{ 'badge-success' if q.correct_answer == key else 'badge-secondary' }}">
+                                        {{ 'badge-success' if q.correct_answer.upper() == key.upper() else 'badge-secondary' }}">
                                         {{ key }}
                                     </span>
                                     {{ opt }}
