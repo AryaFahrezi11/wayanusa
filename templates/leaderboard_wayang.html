@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard Quiz Wayang - WAYANUSA</title>
+    <meta name="description" content="Lihat peringkat pemain terbaik dalam quiz wayang kulit WAYANUSA.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard_wayang.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
 </head>
@@ -24,23 +24,23 @@
         <div class="container">
             <div class="leaderboard-content">
                 <p class="leaderboard-tag">🏆 LEADERBOARD</p>
-                <h2 class="leaderboard-title">Leaderboard <span class="highlight">Quiz</span></h2>
+                <h2 class="leaderboard-title">Peringkat <span class="highlight">Terbaik</span></h2>
                 <p class="leaderboard-description">
-                    Lihat peringkat pemain terbaik dalam quiz wayang kulit. Pilih level untuk melihat leaderboard
+                    Lihat para juara yang menguasai pengetahuan wayang kulit. Pilih level untuk melihat leaderboard
                     spesifik.
                 </p>
 
                 <div class="level-selector">
-                    <select id="level-select">
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="Expert">Expert</option>
+                    <select id="level-select" aria-label="Pilih Level Quiz">
+                        <option value="Beginner">🌱 Beginner</option>
+                        <option value="Intermediate">⚡ Intermediate</option>
+                        <option value="Advanced">🔥 Advanced</option>
+                        <option value="Expert">💎 Expert</option>
                     </select>
                 </div>
 
                 <div id="podium" class="podium">
-                    <!-- Podium will be rendered here -->
+                    <div class="loading-spinner"></div>
                 </div>
 
                 <div class="leaderboard-table">
@@ -68,72 +68,6 @@
     {% include 'components/chatbot.html' %}
 
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
-    <script>
-        AOS.init({ once: true, offset: 100, duration: 800 });
-
-        // Counter Animation
-        const statsSection = document.getElementById('statsSection');
-        const counters = document.querySelectorAll('.counter');
-        let started = false;
-
-        function startCounting() {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const duration = 2000;
-                const increment = target / (duration / 16);
-                let current = 0;
-                const updateCounter = () => {
-                    current += increment;
-                    if (current < target) {
-                        counter.innerText = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCounter();
-            });
-        }
-
-        if (statsSection) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !started) {
-                        startCounting(); started = true;
-                    }
-                });
-            }, { threshold: 0.5 });
-            observer.observe(statsSection);
-        }
-
-        // SCROLL SPY LOGIC
-        const sections = document.querySelectorAll('section, main');
-        const navLinks = document.querySelectorAll('.taskbar-item');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - 300)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-        AOS.init();
-    </script>
     <script src="{{ url_for('static', filename='js/leaderboard_wayang.js') }}"></script>
 </body>
 

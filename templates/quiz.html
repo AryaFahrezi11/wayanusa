@@ -5,45 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Edukatif - WAYANUSA</title>
+    <meta name="description" content="Tantang diri Anda dengan quiz wayang kulit edukatif dari WAYANUSA.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
-    <style>
-        /* Leaderboard Header Position */
-        .leaderboard-header {
-            text-align: center;
-            width: fit-content;
-            margin-top: 20px;
-            /* Geser ke bawah */
-            margin-left: auto;
-            margin-right: auto;
-            /* Default: center */
-        }
-
-        /* Untuk geser pakai PX */
-        .leaderboard-header {
-            position: relative;
-            left: 320px;
-            /* Geser ke kanan (+), kiri (-) */
-            top: 0px;
-            /* Geser ke bawah (+), atas (-) */
-        }
-
-        /* Optional: Biar icon & teks lebih rapi */
-        .leaderboard-header img {
-            width: 70px;
-            display: block;
-            margin: 0 auto 5px auto;
-        }
-    </style>
-
 </head>
 
 <body>
@@ -59,16 +31,22 @@
                     level menawarkan pengalaman belajar yang unik.
                 </p>
 
-                <!-- Leaderboard Section -->
-                <div class="leaderboard-section">
-                    <a href="{{ url_for('leaderboard_wayang.leaderboard_page') }}" class="leaderboard-link">
-                        <div class="leaderboard-header">
-                            <img src="{{ url_for('static', filename='images/leaderboard_128.png') }}"
-                                alt="Leaderboard Icon" class="leaderboard-icon-left">
+                <!-- Leaderboard CTA Banner -->
+                <a href="{{ url_for('leaderboard_wayang.leaderboard_page') }}" class="leaderboard-banner" id="leaderboard-banner">
+                    <div class="leaderboard-banner-glow"></div>
+                    <div class="leaderboard-banner-content">
+                        <div class="leaderboard-banner-icon">🏆</div>
+                        <div class="leaderboard-banner-text">
                             <h3>Leaderboard</h3>
+                            <p>Lihat peringkat pemain terbaik</p>
                         </div>
-                    </a>
-                </div>
+                        <div class="leaderboard-banner-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </a>
 
                 <div class="quiz-cards" id="quiz-cards">
                     <!-- Levels will be loaded dynamically -->
@@ -79,7 +57,7 @@
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        AOS.init();
+        AOS.init({ once: true, offset: 100, duration: 800 });
 
         // Load quiz levels from API
         async function loadQuizLevels() {
@@ -102,20 +80,39 @@
             }
         }
 
+        function getLevelMeta(name) {
+            const meta = {
+                'Beginner': { emoji: '🌱', desc: 'Mulai perjalanan kamu mengenal wayang kulit dari dasar.', color: '#4ade80' },
+                'Intermediate': { emoji: '⚡', desc: 'Tingkatkan pengetahuan dengan tantangan menengah.', color: '#facc15' },
+                'Advanced': { emoji: '🔥', desc: 'Uji kedalaman pemahaman wayang kulit kamu.', color: '#f97316' },
+                'Expert': { emoji: '💎', desc: 'Hanya untuk ahli sejati wayang kulit.', color: '#818cf8' }
+            };
+            return meta[name] || { emoji: '📚', desc: `Klik tombol "Mulai Kuis" untuk memulai quiz ${name}.`, color: '#d4af37' };
+        }
+
         function displayLevels(levels) {
             const container = document.getElementById('quiz-cards');
             container.innerHTML = '';
 
-            levels.forEach(level => {
+            levels.forEach((level, index) => {
+                const meta = getLevelMeta(level.name);
                 const card = document.createElement('div');
                 card.className = 'quiz-card';
                 card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', (index * 150).toString());
                 card.innerHTML = `
                     <div class="quiz-card-content">
-                        <h3 class="quiz-level">${level.name}</h3>
-                        <p class="quiz-name">Quiz ${level.name}</p>
-                        <p class="quiz-desc">Klik tombol "Mulai Kuis" untuk memulai quiz ${level.name}.</p>
-                        <a href="#" onclick="startQuiz(${level.id})" class="btn-start-quiz">Mulai Kuis</a>
+                        <div class="quiz-card-header">
+                            <span class="quiz-level-emoji">${meta.emoji}</span>
+                            <h3 class="quiz-level">${level.name}</h3>
+                        </div>
+                        <p class="quiz-desc">${meta.desc}</p>
+                        <a href="#" onclick="startQuiz(${level.id}); return false;" class="btn-start-quiz">
+                            Mulai Kuis
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-left: 6px;">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
                     </div>
                 `;
                 container.appendChild(card);
@@ -123,125 +120,23 @@
         }
 
         function startQuiz(levelId) {
-            const loggedIn = {{ session.get('user_logged_in', False) | tojson
-        }};
-        if (!loggedIn) {
-            alert('Silakan login terlebih dahulu untuk menggunakan fitur quiz.');
-            window.location.href = '{{ url_for("web.login_user") }}';
-            return;
-        }
-        // Redirect ke halaman quiz_play dengan level parameter
-        window.location.href = '{{ url_for("web.quiz_play") }}?level=' + levelId;
-        }
-
-        // Load leaderboard
-        async function loadLeaderboard() {
-            try {
-                const response = await fetch('/leaderboard');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch leaderboard');
-                }
-                const data = await response.json();
-                displayLeaderboard(data.leaderboard);
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                document.getElementById('leaderboard-content').innerHTML = '<p>Gagal memuat leaderboard.</p>';
-            }
-        }
-
-        function displayLeaderboard(leaderboard) {
-            const container = document.getElementById('leaderboard-content');
-
-            if (!leaderboard || leaderboard.length === 0) {
-                container.innerHTML = '<p>Belum ada data leaderboard.</p>';
+            const loggedIn = {{ session.get('user_logged_in', False) | tojson }};
+            if (!loggedIn) {
+                alert('Silakan login terlebih dahulu untuk menggunakan fitur quiz.');
+                window.location.href = '{{ url_for("web.login_user") }}';
                 return;
             }
-
-            let html = '';
-            leaderboard.forEach(item => {
-                html += `
-                    <div class="leaderboard-item">
-                        <span class="rank">#${item.rank}</span>
-                        <span class="name">${item.name}</span>
-                        <span class="score">${item.score}</span>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
+            window.location.href = '{{ url_for("web.quiz_play") }}?level=' + levelId;
         }
 
-        // Load levels and leaderboard when page loads
+        // Load levels when page loads
         document.addEventListener('DOMContentLoaded', function () {
             loadQuizLevels();
-            loadLeaderboard();
         });
     </script>
     {% include 'components/chatbot.html' %}
 
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
-    <script>
-        AOS.init({ once: true, offset: 100, duration: 800 });
-
-        // Counter Animation
-        const statsSection = document.getElementById('statsSection');
-        const counters = document.querySelectorAll('.counter');
-        let started = false;
-
-        function startCounting() {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const duration = 2000;
-                const increment = target / (duration / 16);
-                let current = 0;
-                const updateCounter = () => {
-                    current += increment;
-                    if (current < target) {
-                        counter.innerText = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCounter();
-            });
-        }
-
-        if (statsSection) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !started) {
-                        startCounting(); started = true;
-                    }
-                });
-            }, { threshold: 0.5 });
-            observer.observe(statsSection);
-        }
-
-        // SCROLL SPY LOGIC
-        const sections = document.querySelectorAll('section, main');
-        const navLinks = document.querySelectorAll('.taskbar-item');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - 300)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
