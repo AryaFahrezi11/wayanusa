@@ -6,7 +6,7 @@ Flask-SQLAlchemy
 Flask-Migrate
 python-dotenv
 Werkzeug
-psycopg2
+psycopg2-binary
 Authlib
 google-auth
 requests

@@ -56,7 +56,7 @@
 
 .quiz-tag {
     display: inline-block;
-    background: linear-gradient(135deg, #d4af37, #ffd700, #d4af37);
+    background: linear-gradient(135deg, #D4A373, #ffd700, #D4A373);
     background-size: 200% 200%;
     animation: shimmerTag 3s ease-in-out infinite;
     color: #000;
@@ -86,7 +86,7 @@
 }
 
 .quiz-title .highlight {
-    background: linear-gradient(135deg, #d4af37, #ffd700, #f0c040);
+    background: linear-gradient(135deg, #D4A373, #ffd700, #f0c040);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -172,7 +172,7 @@
     font-size: 1.15rem;
     font-weight: 700;
     margin: 0 0 4px;
-    color: #d4af37;
+    color: #D4A373;
     font-family: 'Inter', sans-serif;
 }
 
@@ -189,7 +189,7 @@
 }
 
 .leaderboard-banner:hover .leaderboard-banner-arrow {
-    color: #d4af37;
+    color: #D4A373;
     transform: translateX(4px);
 }
 
@@ -299,7 +299,7 @@
     display: inline-flex;
     align-items: center;
     background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(255, 215, 0, 0.08));
-    color: #d4af37;
+    color: #D4A373;
     padding: 11px 24px;
     border-radius: 12px;
     text-decoration: none;
@@ -310,7 +310,7 @@
 }
 
 .btn-start-quiz:hover {
-    background: linear-gradient(135deg, #d4af37, #ffd700);
+    background: linear-gradient(135deg, #D4A373, #ffd700);
     color: #000;
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
@@ -378,6 +378,51 @@
     .leaderboard-banner-text h3 {
         font-size: 1rem;
     }
+}
+
+/* ---------- SEARCH BOX (ARTIKEL & TONTON) ---------- */
+.search-container {
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 163, 115, 0.3); /* Emas asli */
+    border-radius: 50px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.search-box:hover, .search-box:focus-within {
+    border-color: #D4A373; /* Emas asli */
+    box-shadow: 0 10px 30px rgba(212, 163, 115, 0.2);
+}
+
+.search-icon {
+    font-size: 1.2rem;
+    color: #D4A373;
+    margin-right: 12px;
+}
+
+.search-box input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 480px) {

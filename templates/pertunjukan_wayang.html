@@ -43,23 +43,22 @@
                 </div>
 
                 <!-- VIDEO CARDS -->
-                <div class="quiz-cards" id="videoList">
+                <div class="media-grid" id="videoList">
                     {% for v in videos %}
-                    <div class="quiz-card"
+                    <div class="media-card"
                          data-title="{{ v.judul }}"
                          onclick="goToVideo({{ v.id }})"
                          data-aos="fade-up">
 
-                        <div class="quiz-card-content">
-                            <h3 class="quiz-level">{{ v.judul }}</h3>
-                            <p class="quiz-name">Pertunjukan Wayang</p>
-                            <p class="quiz-desc">Klik untuk menonton pertunjukan dari koleksi WAYANUSA.</p>
-                        </div>
-
                         <img src="https://img.youtube.com/vi/{{ v.youtube_id }}/hqdefault.jpg"
                              alt="{{ v.judul }}"
-                             class="quiz-image"
-                             style="object-fit: cover;">
+                             class="media-image">
+
+                        <div class="media-content">
+                            <h3 class="media-title">{{ v.judul }}</h3>
+                            <p class="media-subtitle">Pertunjukan Wayang</p>
+                            <p class="media-desc">Klik untuk menonton pertunjukan dari koleksi WAYANUSA.</p>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>

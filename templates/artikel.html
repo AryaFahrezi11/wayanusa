@@ -47,26 +47,22 @@
                 </div>
 
                 <!-- ARTICLE CARDS -->
-                <div class="quiz-cards" id="artikelList">
+                <div class="media-grid" id="artikelList">
                     {% for artikel in artikels %}
-                    <div class="quiz-card" data-title="{{ artikel.title }}" onclick="viewArtikel({{ artikel.id }})"
+                    <div class="media-card" data-title="{{ artikel.title }}" onclick="viewArtikel({{ artikel.id }})"
                         data-aos="fade-up">
 
-                        <div class="quiz-card-content">
-                            <h3 class="quiz-level">{{ artikel.title }}</h3>
-                            <p class="quiz-name">Artikel Wayang</p>
-                            <p class="quiz-desc">{{ artikel.content | striptags | truncate(100) }}</p>
-                        </div>
-
-                        <!-- <img src="{% if artikel.thumbnail %}{{ url_for('web.uploaded_file', filename='thumbnails/' + artikel.thumbnail) }}{% else %}{{ url_for('static', filename='images/logo.png') }}{% endif %}" 
-                             alt="{{ artikel.title }}" 
-                             class="quiz-image"
-                             style="object-fit: cover;"> -->
                         <img src="{% if artikel.thumbnail %}
                                     {{ url_for('static', filename='uploads/thumbnails/' ~ artikel.thumbnail) }}
                                 {% else %}
                                     {{ url_for('static', filename='images/logo.png') }}
-                                {% endif %}" alt="{{ artikel.title }}" class="quiz-image" style="object-fit: cover;">
+                                {% endif %}" alt="{{ artikel.title }}" class="media-image">
+
+                        <div class="media-content">
+                            <h3 class="media-title">{{ artikel.title }}</h3>
+                            <p class="media-subtitle">Artikel Wayang</p>
+                            <p class="media-desc">{{ artikel.content | striptags | truncate(100) }}</p>
+                        </div>
 
                     </div>
                     {% endfor %}
