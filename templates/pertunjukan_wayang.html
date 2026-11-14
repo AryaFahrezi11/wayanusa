@@ -8,15 +8,15 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap"
+          rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"></noscript>
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
-    <!-- AOS -->
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <body>
@@ -47,12 +47,12 @@
                     {% for v in videos %}
                     <div class="media-card"
                          data-title="{{ v.judul }}"
-                         onclick="goToVideo({{ v.id }})"
-                         data-aos="fade-up">
+                         onclick="goToVideo({{ v.id }})">
 
                         <img src="https://img.youtube.com/vi/{{ v.youtube_id }}/hqdefault.jpg"
                              alt="{{ v.judul }}"
-                             class="media-image">
+                             class="media-image"
+                             loading="lazy">
 
                         <div class="media-content">
                             <h3 class="media-title">{{ v.judul }}</h3>
@@ -60,6 +60,8 @@
                             <p class="media-desc">Klik untuk menonton pertunjukan dari koleksi WAYANUSA.</p>
                         </div>
                     </div>
+                    {% else %}
+                        <p class="text-muted" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted, #aaa);">Belum ada video pertunjukan tersedia.</p>
                     {% endfor %}
                 </div>
 
@@ -68,10 +70,7 @@
     </section>
 
     <!-- Scripts -->
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        AOS.init();
-
         function goToVideo(videoId) {
             if (!{{ session.get('user_logged_in', False)|tojson }}) {
                 alert("Silakan login terlebih dahulu untuk menonton video.");
@@ -84,10 +83,10 @@
 
         function searchVideo() {
             const input = document.getElementById("searchInput").value.toLowerCase();
-            const cards = document.querySelectorAll(".quiz-card");
+            const cards = document.querySelectorAll(".media-card");
 
             cards.forEach(card => {
-                const title = card.dataset.title.toLowerCase();
+                const title = (card.dataset.title || "").toLowerCase();
                 card.style.display = title.includes(input) ? "" : "none";
             });
         }
@@ -95,68 +94,5 @@
     {% include 'components/chatbot.html' %}
 
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
-    <script>
-        AOS.init({ once: true, offset: 100, duration: 800 });
-
-        // Counter Animation
-        const statsSection = document.getElementById('statsSection');
-        const counters = document.querySelectorAll('.counter');
-        let started = false;
-
-        function startCounting() {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const duration = 2000;
-                const increment = target / (duration / 16);
-                let current = 0;
-                const updateCounter = () => {
-                    current += increment;
-                    if (current < target) {
-                        counter.innerText = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCounter();
-            });
-        }
-
-        if (statsSection) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !started) {
-                        startCounting(); started = true;
-                    }
-                });
-            }, { threshold: 0.5 });
-            observer.observe(statsSection);
-        }
-
-        // SCROLL SPY LOGIC
-        const sections = document.querySelectorAll('section, main');
-        const navLinks = document.querySelectorAll('.taskbar-item');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - 300)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
-
 </body>
 </html>

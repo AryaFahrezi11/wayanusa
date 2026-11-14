@@ -9,31 +9,25 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap"
+          rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
 
     <style>
         /* --- TEMA GELAP (DARK MODE) --- */
         :root {
             --primary-color: #D4A373;
-            /* Warna Emas Wayang */
+            --primary-gold: #E5A93C;
             --bg-body: #0A0A0A;
-            /* Hitam Hampir Pekat (Latar Belakang) */
-            --bg-card: rgba(30, 30, 30, 0.6);
-            /* Hitam Abu (Latar Kontainer) */
-            --text-main: #ffffff;
-            /* Putih Tulang (Teks Utama) */
-            --text-muted: #cccccc;
-            /* Abu-abu (Teks Sekunder) */
-            --border-color: rgba(212, 175, 55, 0.2);
-            /* Garis Pemisah Tipis */
+            --bg-card: rgba(18, 18, 18, 0.9);
+            --text-main: #F8FAFC;
+            --text-body: #E2E8F0;
+            --text-muted: #94A3B8;
+            --border-color: rgba(212, 163, 115, 0.25);
         }
 
         body {
@@ -44,42 +38,45 @@
         .article-detail-section {
             padding: 120px 20px 80px;
             min-height: 100vh;
-            /* Efek Glow halus di background (opsional) */
-            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--bg-body) 60%);
+            background-image: radial-gradient(circle at 50% 0%, #1c1917 0%, var(--bg-body) 65%);
         }
 
         /* Container Artikel */
         .article-detail-container {
-            max-width: 850px;
+            max-width: 880px;
             margin: 0 auto;
             background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 50px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 55px 60px;
             border-radius: 24px;
-            /* Border halus biar batasnya kelihatan */
             border: 1px solid var(--border-color);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            /* Bayangan gelap */
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(229, 169, 60, 0.04);
         }
 
         /* Tombol Kembali */
         .article-back-btn {
             display: inline-flex;
             align-items: center;
+            gap: 8px;
             text-decoration: none;
-            color: var(--text-muted);
+            color: var(--primary-gold);
+            background: rgba(229, 169, 60, 0.08);
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(229, 169, 60, 0.25);
             font-weight: 500;
             margin-bottom: 25px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .article-back-btn:hover {
-            color: var(--primary-color);
-            transform: translateX(-5px);
-            /* Efek geser dikit pas di-hover */
+            color: #FFFFFF;
+            background: rgba(229, 169, 60, 0.22);
+            border-color: rgba(229, 169, 60, 0.5);
+            transform: translateX(-4px);
         }
 
         /* Judul Artikel */
@@ -87,8 +84,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 2.8rem;
             font-weight: 700;
-            color: #ffffff;
-            /* Putih bersih untuk judul */
+            color: #FFFFFF;
             line-height: 1.25;
             margin-bottom: 20px;
             letter-spacing: -0.5px;
@@ -101,7 +97,7 @@
             color: var(--text-muted);
             margin-bottom: 35px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 25px;
+            padding-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -111,74 +107,165 @@
         .article-thumbnail {
             width: 100%;
             height: auto;
-            max-height: 500px;
+            max-height: 480px;
             object-fit: cover;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 45px;
-            /* Border tipis di sekeliling gambar */
-            border: 1px solid #333;
+            border: 1px solid rgba(212, 163, 115, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
-        /* --- KONTEN ARTIKEL (Typography Dark Mode) --- */
+        /* --- KONTEN ARTIKEL (Typography & Paste-Proof Dark Mode) --- */
         .article-content {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.125rem;
-            /* 18px */
-            line-height: 1.85;
-            /* Spasi baris lega */
-            color: #d1d1d1;
-            /* Putih agak redup (biar mata gak sakit) */
+            line-height: 1.95;
+            color: #F1F5F9 !important;
+            word-wrap: break-word;
+        }
+
+        /* Paksa semua child element agar tidak mewarisi warna gelap / background putih hasil copy-paste */
+        .article-content * {
+            color: inherit !important;
+            background-color: transparent !important;
+            background: transparent !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .article-content p,
+        .article-content span,
+        .article-content div,
+        .article-content li,
+        .article-content small,
+        .article-content font {
+            color: #E2E8F0 !important;
+            background-color: transparent !important;
+            background: transparent !important;
         }
 
         .article-content p {
             margin-bottom: 1.8em;
+            letter-spacing: 0.01em;
         }
 
-        /* Heading di dalam konten */
+        /* Headings di dalam konten */
+        .article-content h1,
         .article-content h2,
-        .article-content h3 {
+        .article-content h3,
+        .article-content h4,
+        .article-content h5,
+        .article-content h6 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            color: var(--primary-color);
-            /* Heading dikasih warna Emas */
-            margin-top: 2em;
+            color: #E5A93C !important;
+            margin-top: 2.2em;
             margin-bottom: 0.8em;
+            line-height: 1.35;
+        }
+
+        .article-content h1 { font-size: 2.2rem; }
+        .article-content h2 { 
+            font-size: 1.8rem; 
+            border-bottom: 1px solid rgba(229, 169, 60, 0.25); 
+            padding-bottom: 8px; 
+        }
+        .article-content h3 { font-size: 1.45rem; }
+        .article-content h4 { font-size: 1.2rem; }
+
+        .article-content strong,
+        .article-content b {
+            color: #FFFFFF !important;
+            font-weight: 600;
+        }
+
+        .article-content em,
+        .article-content i {
+            color: #F8FAFC !important;
+            font-style: italic;
+        }
+
+        .article-content a {
+            color: #E5A93C !important;
+            text-decoration: underline !important;
+            text-underline-offset: 4px;
+            transition: color 0.2s, opacity 0.2s;
+        }
+
+        .article-content a:hover {
+            color: #FFFFFF !important;
+            opacity: 0.9;
         }
 
         .article-content ul,
         .article-content ol {
             margin-bottom: 1.8em;
-            padding-left: 20px;
-            color: #e0e0e0;
+            padding-left: 28px;
+            color: #E2E8F0 !important;
         }
 
         .article-content li {
-            margin-bottom: 0.8em;
-        }
-
-        .article-content strong {
-            color: #fff;
-            /* Teks bold jadi putih terang */
+            margin-bottom: 0.7em;
+            line-height: 1.85;
+            color: #E2E8F0 !important;
         }
 
         .article-content img {
             max-width: 100%;
             height: auto;
-            border-radius: 8px;
-            margin: 30px 0;
-            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin: 30px auto;
+            display: block;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         /* Blockquote di Dark Mode */
         .article-content blockquote {
-            border-left: 4px solid var(--primary-color);
+            border-left: 4px solid #E5A93C !important;
             margin: 30px 0;
-            padding: 20px 30px;
+            padding: 20px 28px;
             font-style: italic;
-            color: #b0b0b0;
-            background: #1a1a1a;
-            /* Background kutipan lebih terang dikit */
+            color: #CBD5E1 !important;
+            background: rgba(229, 169, 60, 0.06) !important;
             border-radius: 0 12px 12px 0;
+        }
+
+        .article-content blockquote * {
+            color: #CBD5E1 !important;
+            font-style: italic;
+        }
+
+        /* Tabel di dalam konten */
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            color: #E2E8F0 !important;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .article-content th,
+        .article-content td {
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            padding: 12px 16px;
+            color: #E2E8F0 !important;
+            background-color: transparent !important;
+        }
+
+        .article-content th {
+            background-color: rgba(229, 169, 60, 0.15) !important;
+            color: #FFFFFF !important;
+            font-weight: 600;
+        }
+
+        .article-content mark,
+        .article-content code {
+            background-color: rgba(229, 169, 60, 0.15) !important;
+            color: #F8FAFC !important;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
         /* Sumber Link */
@@ -188,53 +275,34 @@
             border-top: 1px solid var(--border-color);
             font-size: 0.95rem;
             color: var(--text-muted);
-            background: #181818;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px 24px;
             border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .article-source a {
-            color: var(--primary-color);
+            color: var(--primary-gold);
             text-decoration: none;
             font-weight: 600;
             transition: color 0.2s;
         }
 
         .article-source a:hover {
-            color: #fff;
+            color: #FFFFFF;
             text-decoration: underline;
-        }
-
-        /* Scrollbar Kustom (Biar gak putih nyolok) */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-body);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color);
         }
 
         /* Responsif HP */
         @media (max-width: 768px) {
             .article-detail-container {
-                padding: 25px;
+                padding: 30px 20px;
                 border: none;
-                /* Hilangkan border di HP biar full */
                 background: transparent;
-                /* Atau background body */
             }
 
             .article-title {
-                font-size: 2.2rem;
+                font-size: 2.1rem;
             }
 
             .article-content {
@@ -249,7 +317,7 @@
     {% include "layouts/navbar.html" %}
 
     <section class="article-detail-section">
-        <div class="article-detail-container" data-aos="fade-up">
+        <div class="article-detail-container">
 
             <a href="{{ url_for('web.artikel') }}" class="article-back-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -277,7 +345,7 @@
 
             {% if artikel.thumbnail %}
             <img src="{{ url_for('static', filename='uploads/thumbnails/' ~ artikel.thumbnail) }}"
-                alt="{{ artikel.title }}" class="article-thumbnail">
+                alt="{{ artikel.title }}" class="article-thumbnail" loading="lazy">
             {% endif %}
 
             <div class="article-content">
@@ -297,77 +365,22 @@
     {% include 'components/chatbot.html' %}
 
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
     <script>
-        AOS.init({ once: true, offset: 100, duration: 800 });
-
-        // Counter Animation
-        const statsSection = document.getElementById('statsSection');
-        const counters = document.querySelectorAll('.counter');
-        let started = false;
-
-        function startCounting() {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const duration = 2000;
-                const increment = target / (duration / 16);
-                let current = 0;
-                const updateCounter = () => {
-                    current += increment;
-                    if (current < target) {
-                        counter.innerText = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCounter();
-            });
-        }
-
-        if (statsSection) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !started) {
-                        startCounting(); started = true;
-                    }
+        document.addEventListener("DOMContentLoaded", function() {
+            const content = document.querySelector(".article-content");
+            if (content) {
+                // Bersihkan style inline color & background dari artikel hasil copy-paste (Wikipedia / Word / Web lain)
+                const elements = content.querySelectorAll("*");
+                elements.forEach(function(el) {
+                    el.style.removeProperty("color");
+                    el.style.removeProperty("background-color");
+                    el.style.removeProperty("background");
+                    if (el.hasAttribute("color")) el.removeAttribute("color");
+                    if (el.hasAttribute("bgcolor")) el.removeAttribute("bgcolor");
                 });
-            }, { threshold: 0.5 });
-            observer.observe(statsSection);
-        }
-
-        // SCROLL SPY LOGIC
-        const sections = document.querySelectorAll('section, main');
-        const navLinks = document.querySelectorAll('.taskbar-item');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - 300)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
+            }
         });
     </script>
-
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-        AOS.init({
-            duration: 800,
-            once: true
-        });
-    </script>
-
 </body>
 
 </html>

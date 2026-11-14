@@ -4,7 +4,7 @@
     <div class="chatbot-button" id="chatbotButton">
 
         <div class="chatbot-icon-wrapper">
-            <img src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" alt="Chatbot" class="chatbot-img">
+            <img src="{{ url_for('static', filename='images/icon_robot.png') }}" alt="Chatbot" class="chatbot-img">
         </div>
 
         <div class="chatbot-tooltip">
@@ -19,8 +19,7 @@
         <div class="chat-header">
             <div class="chat-header-info">
                 <div class="chat-avatar">
-                    <img src="{{ url_for('static', filename='images/cepot_avatar.png') }}"
-                        onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'" alt="Cepot Bot">
+                    <img src="{{ url_for('static', filename='images/cepot_avatar.png') }}" alt="Cepot Bot">
                     <div class="status-dot"></div>
                 </div>
                 <div>
@@ -44,8 +43,7 @@
             <div class="chat-messages" id="chatMessages">
                 <div class="message-row bot-row">
                     <div class="message-avatar">
-                        <img src="{{ url_for('static', filename='images/cepot_avatar.png') }}"
-                            onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'">
+                        <img src="{{ url_for('static', filename='images/cepot_avatar.png') }}" alt="Cepot">
                     </div>
                     <div class="message-bubble bot-bubble">
                         <p>Sampurasun! 👋<br>Kenalin inyong Cepot. Ana sing bisa dibantu?</p>

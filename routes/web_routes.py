@@ -150,20 +150,54 @@ def pengenalan_wayang():
         return redirect(url_for('web.login_user'))
     return render_template('pengenalan_wayang.html')
 
+_CACHED_VIDEOS = None
+
 @web_routes.route('/pertunjukan-wayang')
 def pertunjukan_wayang():
     if not session.get('user_logged_in'):
         return redirect(url_for('web.login_user'))
-    videos = Video.query.filter_by(tampil=True).all()
-    return render_template('pertunjukan_wayang.html', videos=videos)
+    global _CACHED_VIDEOS
+    if not _CACHED_VIDEOS:
+        try:
+            videos = Video.query.filter((Video.tampil == True) | (Video.tampil.is_(None))).all()
+            if not videos:
+                videos = Video.query.all()
+            if videos:
+                _CACHED_VIDEOS = videos
+        except Exception as e:
+            print(f"⚠️ Error querying Video: {e}")
+            videos = []
+    else:
+        videos = _CACHED_VIDEOS
+    return render_template('pertunjukan_wayang.html', videos=videos or [])
+
+# Cache levels agar tidak query Supabase berulang kali
+_CACHED_QUIZ_LEVELS = None
 
 @web_routes.route('/quiz')
 @user_login_required
 def quiz():
     if not session.get('user_logged_in'):
         return redirect(url_for('web.login_user'))
-    levels = QuizLevel.query.all()
-    return render_template('quiz.html', levels=levels)
+    
+    global _CACHED_QUIZ_LEVELS
+    if not _CACHED_QUIZ_LEVELS:
+        try:
+            db_levels = QuizLevel.query.all()
+            if db_levels:
+                _CACHED_QUIZ_LEVELS = [{"id": l.id, "name": l.name} for l in db_levels]
+        except Exception as e:
+            print(f"⚠️ Error querying QuizLevel: {e}")
+        
+        if not _CACHED_QUIZ_LEVELS:
+            _CACHED_QUIZ_LEVELS = [
+                {"id": 1, "name": "Beginner"},
+                {"id": 2, "name": "Intermediate"},
+                {"id": 3, "name": "Advanced"},
+                {"id": 4, "name": "Expert"}
+            ]
+
+    return render_template('quiz.html', levels=_CACHED_QUIZ_LEVELS)
 
 @web_routes.route('/quiz/play')
 @user_login_required
@@ -175,25 +209,58 @@ def quiz_play():
         flash('Level quiz tidak valid!', 'error')
         return redirect(url_for('web.quiz'))
 
-    level = QuizLevel.query.get(level_id)
+    level = None
+    level_names = {1: "Beginner", 2: "Intermediate", 3: "Advanced", 4: "Expert"}
+    if level_id in level_names:
+        level = type('LevelObj', (), {'id': level_id, 'name': level_names[level_id]})()
+    else:
+        try:
+            level = QuizLevel.query.get(level_id)
+        except Exception:
+            pass
+
     if not level:
         flash('Level quiz tidak ditemukan!', 'error')
         return redirect(url_for('web.quiz'))
 
     return render_template('quiz_play.html', level=level)
 
+_CACHED_DALANGS = None
+
 @web_routes.route('/mencari-dalang')
 def mencari_dalang():
     if not session.get('user_logged_in'):
         return redirect(url_for('web.login_user'))
-    dalangs = Dalang.query.all()   
-    return render_template('mencari_dalang.html', dalangs=dalangs)
+    
+    global _CACHED_DALANGS
+    if not _CACHED_DALANGS:
+        try:
+            dalangs = Dalang.query.all()
+            if dalangs:
+                _CACHED_DALANGS = dalangs
+        except Exception as e:
+            print(f"⚠️ Error querying Dalang: {e}")
+            dalangs = []
+    else:
+        dalangs = _CACHED_DALANGS
+
+    return render_template('mencari_dalang.html', dalangs=dalangs or [])
 
 @web_routes.route('/dalang/<int:dalang_id>')
 def dalang_detail(dalang_id):
     if not session.get('user_logged_in'):
         return redirect(url_for('web.login_user'))
-    dalang = Dalang.query.get_or_404(dalang_id)
+    
+    global _CACHED_DALANGS
+    dalang = None
+    if _CACHED_DALANGS:
+        for d in _CACHED_DALANGS:
+            if d.id == dalang_id:
+                dalang = d
+                break
+    if not dalang:
+        dalang = Dalang.query.get_or_404(dalang_id)
+
     return render_template('dalang_detail.html', dalang=dalang)
 
 @web_routes.route("/pertunjukan_wayang/video/<int:id>")
@@ -221,12 +288,24 @@ def search_video():
 
     return render_template("search_video.html", q=q, videos=videos)
 
+_CACHED_ARTIKELS = None
+
 @web_routes.route('/artikel')
 def artikel():
     if not session.get('user_logged_in'):
         return redirect(url_for('web.login_user'))
-    artikels = Article.query.order_by(Article.created_at.desc()).all()
-    return render_template('artikel.html', artikels=artikels)
+    global _CACHED_ARTIKELS
+    if not _CACHED_ARTIKELS:
+        try:
+            artikels = Article.query.order_by(Article.created_at.desc()).all()
+            if artikels:
+                _CACHED_ARTIKELS = artikels
+        except Exception as e:
+            print(f"⚠️ Error querying Article: {e}")
+            artikels = []
+    else:
+        artikels = _CACHED_ARTIKELS
+    return render_template('artikel.html', artikels=artikels or [])
 
 @web_routes.route('/artikel/<int:id>')
 def artikel_detail(id):
@@ -319,6 +398,8 @@ def dalang_add():
         new_dalang = Dalang(nama=nama, alamat=alamat, latitude=latitude, longitude=longitude, foto=foto)
         db.session.add(new_dalang)
         db.session.commit()
+        global _CACHED_DALANGS
+        _CACHED_DALANGS = None
         flash('Dalang berhasil ditambahkan!', 'success')
         return redirect(url_for('web.dalang_list'))
     return render_template('admin/dalang_form.html', dalang=None)
@@ -339,6 +420,8 @@ def dalang_edit(id):
                 file.save(os.path.join('static/uploads', filename))
                 dalang.foto=filename
         db.session.commit()
+        global _CACHED_DALANGS
+        _CACHED_DALANGS = None
         flash('Dalang berhasil diperbarui!', 'success')
         return redirect(url_for('web.dalang_list'))
     return render_template('admin/dalang_form.html', dalang=dalang)
@@ -349,6 +432,8 @@ def dalang_delete(id):
     dalang=Dalang.query.get_or_404(id)
     db.session.delete(dalang)
     db.session.commit()
+    global _CACHED_DALANGS
+    _CACHED_DALANGS = None
     flash('Dalang berhasil dihapus!', 'success')
     return redirect(url_for('web.dalang_list'))
 
@@ -374,6 +459,8 @@ def video_add():
         video = Video(judul=judul, youtube_link=youtube_link)
         db.session.add(video)
         db.session.commit()
+        global _CACHED_VIDEOS
+        _CACHED_VIDEOS = None
         flash("Video berhasil ditambahkan!", "success")
         return redirect(url_for('web.video_list'))
 
@@ -396,6 +483,8 @@ def video_edit(id):
         item.youtube_link = youtube_link
 
         db.session.commit()
+        global _CACHED_VIDEOS
+        _CACHED_VIDEOS = None
         flash("Video berhasil diperbarui!", "success")
         return redirect(url_for('web.video_list'))
 
@@ -407,6 +496,8 @@ def video_delete(id):
     video = Video.query.get_or_404(id)
     db.session.delete(video)
     db.session.commit()
+    global _CACHED_VIDEOS
+    _CACHED_VIDEOS = None
     flash("Video berhasil dihapus!", "success")
     return redirect(url_for('web.video_list'))
 
@@ -706,6 +797,8 @@ def artikel_add():
         new_artikel = Article(title=title, content=content, source_link=source_link, thumbnail=thumbnail)
         db.session.add(new_artikel)
         db.session.commit()
+        global _CACHED_ARTIKELS
+        _CACHED_ARTIKELS = None
 
         flash('Artikel berhasil ditambahkan!', 'success')
         return redirect(url_for('web.artikel_list'))
@@ -742,6 +835,8 @@ def artikel_edit(id):
                 artikel.thumbnail = thumbnail
 
         db.session.commit()
+        global _CACHED_ARTIKELS
+        _CACHED_ARTIKELS = None
         flash('Artikel berhasil diperbarui!', 'success')
         return redirect(url_for('web.artikel_list'))
 
@@ -760,6 +855,8 @@ def artikel_delete(id):
 
     db.session.delete(artikel)
     db.session.commit()
+    global _CACHED_ARTIKELS
+    _CACHED_ARTIKELS = None
     flash('Artikel berhasil dihapus!', 'success')
     return redirect(url_for('web.artikel_list'))
 

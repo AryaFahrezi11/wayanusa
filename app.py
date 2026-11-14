@@ -36,6 +36,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 🔥 TAMBAHAN WAJIB UNTUK SUPABASE DI CLOUD
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'poolclass': NullPool}
 
+# Cache static files di browser selama 1 tahun
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60 * 60 * 24 * 365
+
 # Upload Config
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['UPLOAD_FOTO'] = 'static/uploads/profile_pics'

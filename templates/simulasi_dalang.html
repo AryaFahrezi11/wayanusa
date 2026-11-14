@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome async -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
     <style>
         /* =========================================
@@ -268,7 +271,7 @@
             data-tkb="{{ url_for('static', filename=w.tangan_kanan_bawah) }}"
             data-tla="{{ url_for('static', filename=w.tangan_kiri_atas) }}"
             data-tlb="{{ url_for('static', filename=w.tangan_kiri_bawah) }}">
-            <img src="{{ url_for('static', filename=w.thumbnail) }}">
+            <img src="{{ url_for('static', filename=w.thumbnail) }}" loading="lazy">
         </div>
         {% endfor %}
     </div>

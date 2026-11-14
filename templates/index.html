@@ -7,14 +7,24 @@
     <title>Home - Wayanusa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Fonts: async non-blocking -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+          rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/wayang.css') }}"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- Font Awesome: async non-blocking -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
+
+    <!-- AOS: async non-blocking -->
+    <link rel="preload" href="https://unpkg.com/aos@next/dist/aos.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"></noscript>
 
     <meta name="description"
         content="Wayanusa adalah aplikasi edukasi interaktif untuk mengenal budaya Wayang Kulit, mencari profil Dalang, menonton pertunjukan, hingga ngobrol langsung dengan AI Cepot.">
@@ -960,7 +970,7 @@
                 </div>
                 <div class="mobile-image"><img src="{{ url_for('static', filename='images/hp_mockup.png') }}"
                         onerror="this.src='https://via.placeholder.com/300x600/111/D4A373?text=App+Mockup'"
-                        alt="Wayanusa Mobile App" class="phone-mockup"></div>
+                        alt="Wayanusa Mobile App" class="phone-mockup" loading="lazy"></div>
             </div>
         </div>
     </section>
@@ -1035,7 +1045,8 @@
                 </div>
                 <div data-aos="fade-left" style="display: flex; justify-content: center;">
                     <img src="{{ url_for('static', filename='images/gunungan_wayang.png') }}" alt="Gunungan Wayang"
-                        style="border-radius: 20px; box-shadow: 0 0 30px rgba(212, 163, 115, 0.2); max-width: 100%; height: fit-content;">
+                        style="border-radius: 20px; box-shadow: 0 0 30px rgba(212, 163, 115, 0.2); max-width: 100%; height: fit-content;"
+                        loading="lazy">
                 </div>
             </div>
         </div>
@@ -1058,7 +1069,7 @@
                         data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
                         <div class="dalang-photo-wrapper"><img
                                 src="{{ url_for('web.uploaded_file', filename=dalang.foto) if dalang.foto else 'https://via.placeholder.com/300x400/333/D4A373?text=No+Image' }}"
-                                alt="Foto {{ dalang.nama }}" class="dalang-photo"></div>
+                                alt="Foto {{ dalang.nama }}" class="dalang-photo" loading="lazy"></div>
                         <div class="dalang-info">
                             <h4>{{ dalang.nama }}</h4>
                             <p><i class="fas fa-map-pin" style="color: #D4A373;"></i> {{ dalang.alamat[:25] }}...</p>

@@ -9,11 +9,26 @@ quiz_routes = Blueprint("quiz_routes", __name__)
 # ============================================================
 # 0. GET LIST LEVEL
 # ============================================================
+_CACHED_LEVELS = None
+
 @quiz_routes.route("/levels", methods=["GET"])
 def get_levels():
-    levels = QuizLevel.query.all()
-    data = [{"id": l.id, "name": l.name} for l in levels]
-    return jsonify({"levels": data}), 200
+    global _CACHED_LEVELS
+    if not _CACHED_LEVELS:
+        try:
+            levels = QuizLevel.query.all()
+            if levels:
+                _CACHED_LEVELS = [{"id": l.id, "name": l.name} for l in levels]
+        except Exception:
+            pass
+        if not _CACHED_LEVELS:
+            _CACHED_LEVELS = [
+                {"id": 1, "name": "Beginner"},
+                {"id": 2, "name": "Intermediate"},
+                {"id": 3, "name": "Advanced"},
+                {"id": 4, "name": "Expert"}
+            ]
+    return jsonify({"levels": _CACHED_LEVELS}), 200
 
 
 # ============================================================

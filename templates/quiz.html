@@ -10,11 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap"
-        rel="stylesheet">
+        rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
 </head>
 
@@ -49,76 +49,36 @@
                 </a>
 
                 <div class="quiz-cards" id="quiz-cards">
-                    <!-- Levels will be loaded dynamically -->
+                    {% set level_meta = {
+                        'Beginner': {'emoji': '🌱', 'desc': 'Mulai perjalanan kamu mengenal wayang kulit dari dasar.'},
+                        'Intermediate': {'emoji': '⚡', 'desc': 'Tingkatkan pengetahuan dengan tantangan menengah.'},
+                        'Advanced': {'emoji': '🔥', 'desc': 'Uji kedalaman pemahaman wayang kulit kamu.'},
+                        'Expert': {'emoji': '💎', 'desc': 'Hanya untuk ahli sejati wayang kulit.'}
+                    } %}
+                    {% for level in levels %}
+                    {% set meta = level_meta.get(level.name, {'emoji': '📚', 'desc': 'Klik tombol Mulai Kuis untuk memulai quiz ' ~ level.name ~ '.'}) %}
+                    <div class="quiz-card" onclick="startQuiz({{ level.id }})">
+                        <div class="quiz-card-content">
+                            <div class="quiz-card-header">
+                                <span class="quiz-level-emoji">{{ meta.emoji }}</span>
+                                <h3 class="quiz-level">{{ level.name }}</h3>
+                            </div>
+                            <p class="quiz-desc">{{ meta.desc }}</p>
+                            <a href="#" onclick="event.stopPropagation(); startQuiz({{ level.id }}); return false;" class="btn-start-quiz">
+                                Mulai Kuis
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-left: 6px;">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </section>
 
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        AOS.init({ once: true, offset: 100, duration: 800 });
-
-        // Load quiz levels from API
-        async function loadQuizLevels() {
-            try {
-                const response = await fetch('/api/quiz/levels');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch levels');
-                }
-                const data = await response.json();
-                displayLevels(data.levels);
-            } catch (error) {
-                console.error('Error loading levels:', error);
-                // Fallback to static levels if API fails
-                displayLevels([
-                    { id: 1, name: 'Beginner' },
-                    { id: 2, name: 'Intermediate' },
-                    { id: 3, name: 'Advanced' },
-                    { id: 4, name: 'Expert' }
-                ]);
-            }
-        }
-
-        function getLevelMeta(name) {
-            const meta = {
-                'Beginner': { emoji: '🌱', desc: 'Mulai perjalanan kamu mengenal wayang kulit dari dasar.', color: '#4ade80' },
-                'Intermediate': { emoji: '⚡', desc: 'Tingkatkan pengetahuan dengan tantangan menengah.', color: '#facc15' },
-                'Advanced': { emoji: '🔥', desc: 'Uji kedalaman pemahaman wayang kulit kamu.', color: '#f97316' },
-                'Expert': { emoji: '💎', desc: 'Hanya untuk ahli sejati wayang kulit.', color: '#818cf8' }
-            };
-            return meta[name] || { emoji: '📚', desc: `Klik tombol "Mulai Kuis" untuk memulai quiz ${name}.`, color: '#D4A373' };
-        }
-
-        function displayLevels(levels) {
-            const container = document.getElementById('quiz-cards');
-            container.innerHTML = '';
-
-            levels.forEach((level, index) => {
-                const meta = getLevelMeta(level.name);
-                const card = document.createElement('div');
-                card.className = 'quiz-card';
-                card.setAttribute('data-aos', 'fade-up');
-                card.setAttribute('data-aos-delay', (index * 150).toString());
-                card.innerHTML = `
-                    <div class="quiz-card-content">
-                        <div class="quiz-card-header">
-                            <span class="quiz-level-emoji">${meta.emoji}</span>
-                            <h3 class="quiz-level">${level.name}</h3>
-                        </div>
-                        <p class="quiz-desc">${meta.desc}</p>
-                        <a href="#" onclick="startQuiz(${level.id}); return false;" class="btn-start-quiz">
-                            Mulai Kuis
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-left: 6px;">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
         function startQuiz(levelId) {
             const loggedIn = {{ session.get('user_logged_in', False) | tojson }};
             if (!loggedIn) {
@@ -128,11 +88,6 @@
             }
             window.location.href = '{{ url_for("web.quiz_play") }}?level=' + levelId;
         }
-
-        // Load levels when page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            loadQuizLevels();
-        });
     </script>
     {% include 'components/chatbot.html' %}
 

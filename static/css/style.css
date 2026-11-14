@@ -1050,3 +1050,27 @@ ul { list-style: none; }
     .chatbot-icon { width: 22px; height: 22px; }
     .chat-popup { bottom: 70px; right: 15px; width: 280px; height: 350px; }
 }
+
+/* =========================================
+   PERFORMANCE & ACCESSIBILITY
+   ========================================= */
+
+/* Hormati preferensi user yang minta animasi dikurangi */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Smooth page transition */
+.main-content {
+    animation: pageFadeIn 0.2s ease-out;
+}
+
+@keyframes pageFadeIn {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
