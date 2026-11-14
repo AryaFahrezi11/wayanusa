@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - WAYANUSA</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_2.png') }}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #0A0A0A;
+            --bg-surface: #121212;
+            --bg-card: #181818;
+            --bg-card-hover: #1f1f1f;
+            --primary-gold: #E5A93C;
+            --primary-gold-glow: rgba(229, 169, 60, 0.15);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-gold: rgba(229, 169, 60, 0.3);
+            --text-main: #F8FAFC;
+            --text-body: #CBD5E1;
+            --text-muted: #94A3B8;
+            
+            /* HTTP Method Colors */
+            --get-color: #10B981;
+            --get-bg: rgba(16, 185, 129, 0.12);
+            --post-color: #3B82F6;
+            --post-bg: rgba(59, 130, 246, 0.12);
+            --put-color: #F59E0B;
+            --put-bg: rgba(245, 158, 11, 0.12);
+            --delete-color: #EF4444;
+            --delete-bg: rgba(239, 68, 68, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(229, 169, 60, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Top Header Navbar */
+        .apidocs-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .nav-brand img {
+            height: 38px;
+            width: auto;
+        }
+
+        .nav-title-group h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .version-badge {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: var(--primary-gold-glow);
+            color: var(--primary-gold);
+            border: 1px solid var(--border-gold);
+            font-weight: 600;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            color: var(--text-muted);
+        }
+
+        .nav-btn:hover {
+            color: #fff;
+            border-color: var(--border-gold);
+            background: rgba(229, 169, 60, 0.1);
+        }
+
+        .nav-btn.primary {
+            background: var(--primary-gold);
+            color: #000;
+            font-weight: 600;
+            border-color: var(--primary-gold);
+        }
+
+        .nav-btn.primary:hover {
+            background: #d4952c;
+            color: #000;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            max-width: 1280px;
+            margin: 35px auto 25px;
+            padding: 0 24px;
+        }
+
+        .hero-content {
+            background: linear-gradient(135deg, rgba(24, 24, 24, 0.9) 0%, rgba(18, 18, 18, 0.7) 100%);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 35px 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: radial-gradient(circle at 100% 0%, rgba(229, 169, 60, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title span {
+            color: var(--primary-gold);
+        }
+
+        .hero-desc {
+            font-size: 1rem;
+            color: var(--text-body);
+            max-width: 800px;
+            margin-bottom: 24px;
+        }
+
+        .base-url-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 10px 16px;
+            max-width: 650px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        .base-label {
+            color: var(--primary-gold);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 6px;
+            background: var(--primary-gold-glow);
+            border-radius: 4px;
+        }
+
+        .base-url-text {
+            color: #fff;
+            flex-grow: 1;
+            word-break: break-all;
+        }
+
+        .copy-btn-mini {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn-mini:hover {
+            color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Layout Container */
+        .apidocs-container {
+            max-width: 1280px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
+
+        /* Left Sidebar */
+        .apidocs-sidebar {
+            position: sticky;
+            top: 85px;
+            height: calc(100vh - 110px);
+            overflow-y: auto;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .apidocs-sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .apidocs-sidebar::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 3px;
+        }
+
+        .sidebar-search-box {
+            position: relative;
+        }
+
+        .sidebar-search-box input {
+            width: 100%;
+            background: #0A0A0A;
+            border: 1px solid var(--border-subtle);
+            color: #fff;
+            padding: 10px 12px 10px 34px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .sidebar-search-box input:focus {
+            border-color: var(--primary-gold);
+        }
+
+        .sidebar-search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
+
+        .category-filter-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .category-filter-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-filter-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .category-filter-item.active {
+            background: var(--primary-gold-glow);
+            color: var(--primary-gold);
+            font-weight: 600;
+            border-left: 3px solid var(--primary-gold);
+        }
+
+        .category-count {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 7px;
+            border-radius: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Filter Pills & Toolbar */
+        .endpoints-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .method-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .method-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .method-pill:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .method-pill.active {
+            border-color: var(--primary-gold);
+            background: var(--primary-gold);
+            color: #000;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-toggle-all {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-toggle-all:hover {
+            color: #fff;
+            border-color: var(--border-gold);
+        }
+
+        /* Endpoint Card */
+        .endpoint-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .endpoint-card:hover {
+            border-color: rgba(255, 255, 255, 0.16);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .endpoint-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            gap: 16px;
+        }
+
+        .endpoint-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-grow: 1;
+            flex-wrap: wrap;
+        }
+
+        .method-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .method-badge.get { background: var(--get-bg); color: var(--get-color); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .method-badge.post { background: var(--post-bg); color: var(--post-color); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .method-badge.put { background: var(--put-bg); color: var(--put-color); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .method-badge.delete { background: var(--delete-bg); color: var(--delete-color); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .endpoint-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .endpoint-path span.param {
+            color: var(--primary-gold);
+        }
+
+        .endpoint-title {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .endpoint-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .auth-badge {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .auth-badge.locked {
+            background: rgba(229, 169, 60, 0.1);
+            color: var(--primary-gold);
+            border-color: rgba(229, 169, 60, 0.25);
+        }
+
+        .chevron-icon {
+            color: var(--text-muted);
+            transition: transform 0.25s ease;
+            font-size: 0.85rem;
+        }
+
+        .endpoint-card.open .chevron-icon {
+            transform: rotate(180deg);
+            color: var(--primary-gold);
+        }
+
+        /* Endpoint Detail Content (Collapsible) */
+        .endpoint-detail {
+            display: none;
+            padding: 24px;
+            border-top: 1px solid var(--border-subtle);
+            background: #0E0E0E;
+        }
+
+        .endpoint-card.open .endpoint-detail {
+            display: block;
+        }
+
+        .detail-desc {
+            font-size: 0.95rem;
+            color: var(--text-body);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .code-box-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #181818;
+            border: 1px solid var(--border-subtle);
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            padding: 8px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .code-box-header span.badge-status {
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .badge-status.s200 { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+        .badge-status.s201 { background: rgba(59, 130, 246, 0.2); color: #3B82F6; }
+        .badge-status.s400 { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+        .badge-status.s401 { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+
+        .code-snippet {
+            background: #080808;
+            border: 1px solid var(--border-subtle);
+            border-radius: 0 0 10px 10px;
+            padding: 14px 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            color: #E2E8F0;
+            overflow-x: auto;
+            max-height: 320px;
+        }
+
+        .code-snippet pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Headers Table */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            background: #121212;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .spec-table th, .spec-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .spec-table th {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .spec-table td {
+            color: var(--text-body);
+        }
+
+        .spec-table td.name {
+            font-family: 'Fira Code', monospace;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .spec-table td.type {
+            font-family: 'Fira Code', monospace;
+            color: var(--primary-gold);
+            font-size: 0.78rem;
+        }
+
+        /* cURL Box */
+        .curl-box {
+            margin-top: 15px;
+            background: #080808;
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .curl-code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #94A3B8;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-gold);
+            color: #000;
+            border-color: var(--primary-gold);
+        }
+
+        /* Footer */
+        .apidocs-footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .apidocs-container {
+                grid-template-columns: 1fr;
+            }
+            .apidocs-sidebar {
+                display: none; /* Hide sidebar on mobile, filters on top */
+            }
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .hero-content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navbar -->
+    <header class="apidocs-nav">
+        <a href="{{ url_for('web.home') }}" class="nav-brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="WAYANUSA">
+            <div class="nav-title-group">
+                <h1>WAYANUSA API <span class="version-badge">v2.0</span></h1>
+            </div>
+        </a>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('web.api_spec') }}" target="_blank" class="nav-btn" title="OpenAPI 3.0 JSON Specification">
+                <i class="fas fa-file-code"></i> OpenAPI JSON
+            </a>
+            <a href="{{ url_for('web.home') }}" class="nav-btn primary">
+                <i class="fas fa-arrow-left"></i> Kembali ke Web
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <div class="hero-tag">
+                <i class="fas fa-network-wired"></i> REST API Documentation
+            </div>
+            <h2 class="hero-title">Dokumentasi <span>REST API</span> WAYANUSA</h2>
+            <p class="hero-desc">
+                Portal referensi API terpadu untuk pengembang aplikasi Android/Flutter, integrasi sistem kecerdasan buatan (Computer Vision & NLP), Smart Wayang IoT, kuis gamifikasi, dan data budaya Nusantara.
+            </p>
+
+            <div class="base-url-bar">
+                <span class="base-label">Base URL</span>
+                <span class="base-url-text" id="baseUrlText">https://arya124-wayanusa-v2.hf.space</span>
+                <button class="copy-btn-mini" onclick="copyBaseUrl()" title="Salin Base URL">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="apidocs-container">
+        
+        <!-- Left Sidebar Navigation -->
+        <aside class="apidocs-sidebar">
+            <div class="sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearch" placeholder="Cari endpoint..." oninput="handleSearch(this.value)">
+            </div>
+
+            <div class="sidebar-section-title">Kategori Endpoint</div>
+            <ul class="category-filter-list" id="categoryFilterList">
+                <li class="category-filter-item active" onclick="filterCategory('all', this)">
+                    <span>Semua Endpoint</span>
+                    <span class="category-count" id="countAll">28</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('auth', this)">
+                    <span>🔐 Autentikasi User</span>
+                    <span class="category-count">5</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('ai-vision', this)">
+                    <span>🤖 AI Vision (Klasifikasi)</span>
+                    <span class="category-count">1</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('chatbot', this)">
+                    <span>💬 Chatbot AI & RAG</span>
+                    <span class="category-count">3</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('iot', this)">
+                    <span>🎭 Smart Wayang IoT</span>
+                    <span class="category-count">4</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('ensiklopedia', this)">
+                    <span>📜 Ensiklopedia Wayang</span>
+                    <span class="category-count">4</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('quiz', this)">
+                    <span>🎯 Quiz & Leaderboard</span>
+                    <span class="category-count">6</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('media', this)">
+                    <span>🎬 Video & Artikel</span>
+                    <span class="category-count">4</span>
+                </li>
+                <li class="category-filter-item" onclick="filterCategory('ulasan', this)">
+                    <span>⭐ Ulasan & Sentimen</span>
+                    <span class="category-count">2</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Right Content Section -->
+        <section class="apidocs-content">
+            
+            <!-- Toolbar -->
+            <div class="endpoints-toolbar">
+                <div class="method-filters">
+                    <button class="method-pill active" onclick="filterMethod('ALL', this)">SEMUA</button>
+                    <button class="method-pill" onclick="filterMethod('GET', this)">GET</button>
+                    <button class="method-pill" onclick="filterMethod('POST', this)">POST</button>
+                    <button class="method-pill" onclick="filterMethod('PUT', this)">PUT</button>
+                    <button class="method-pill" onclick="filterMethod('DELETE', this)">DELETE</button>
+                </div>
+
+                <div class="toolbar-right">
+                    <button class="btn-toggle-all" onclick="toggleAllCards(true)">Buka Semua</button>
+                    <button class="btn-toggle-all" onclick="toggleAllCards(false)">Tutup Semua</button>
+                </div>
+            </div>
+
+            <!-- List of Endpoints Container -->
+            <div id="endpointsList">
+                
+                <!-- ================= 1. AUTH ================= -->
+                <!-- POST /api/auth/register -->
+                <div class="endpoint-card" data-category="auth" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/auth/register</span>
+                            <span class="endpoint-title">Registrasi Akun Pengguna Baru</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mendaftarkan user baru ke sistem dan mengembalikan JWT Access Token secara langsung.</p>
+                        
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body (JSON)</span></div>
+                                <div class="code-snippet"><pre>{
+  "name": "Budi Santoso",
+  "email": "budi@example.com",
+  "password": "password123"
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header">
+                                    <span>Response Sample</span>
+                                    <span class="badge-status s201">201 CREATED</span>
+                                </div>
+                                <div class="code-snippet"><pre>{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6...",
+  "user": {
+    "id": 1,
+    "name": "Budi Santoso",
+    "email": "budi@example.com"
+  }
+}</pre></div>
+                            </div>
+                        </div>
+
+                        <div class="curl-box">
+                            <span class="curl-code">curl -X POST https://arya124-wayanusa-v2.hf.space/api/auth/register -H "Content-Type: application/json" -d '{"name":"Budi","email":"budi@mail.com","password":"pass"}'</span>
+                            <button class="copy-btn" onclick="copySnippet(this)"><i class="fas fa-copy"></i> Salin cURL</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /api/auth/login -->
+                <div class="endpoint-card" data-category="auth" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/auth/login</span>
+                            <span class="endpoint-title">Masuk Akun & Dapatkan Token JWT</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Autentikasi dengan email dan password untuk mendapatkan token Bearer JWT yang digunakan pada request terproteksi.</p>
+                        
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body (JSON)</span></div>
+                                <div class="code-snippet"><pre>{
+  "email": "budi@example.com",
+  "password": "password123"
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header">
+                                    <span>Response Sample</span>
+                                    <span class="badge-status s200">200 OK</span>
+                                </div>
+                                <div class="code-snippet"><pre>{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6...",
+  "user": {
+    "id": 1,
+    "name": "Budi Santoso",
+    "email": "budi@example.com"
+  }
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /api/auth/google/android -->
+                <div class="endpoint-card" data-category="auth" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/auth/google/android</span>
+                            <span class="endpoint-title">Login dengan Akun Google (Flutter / Mobile)</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Verifikasi idToken Google dari aplikasi mobile dan otomatis registrasi jika pengguna baru pertama kali masuk.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body</span></div>
+                                <div class="code-snippet"><pre>{
+  "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header">
+                                    <span>Response Sample</span>
+                                    <span class="badge-status s200">200 OK</span>
+                                </div>
+                                <div class="code-snippet"><pre>{
+  "success": true,
+  "access_token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": {
+    "id": 12,
+    "name": "Arya M",
+    "email": "arya@gmail.com"
+  }
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/auth/profile -->
+                <div class="endpoint-card" data-category="auth" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/auth/profile</span>
+                            <span class="endpoint-title">Ambil Data Profil Pengguna</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge locked"><i class="fas fa-lock"></i> Bearer Token</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil detail data user berdasarkan token login yang aktif.</p>
+                        <table class="spec-table">
+                            <thead>
+                                <tr><th>Header</th><th>Wajib</th><th>Deskripsi</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="name">Authorization</td><td>Ya</td><td>Bearer &lt;your_jwt_access_token&gt;</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header">
+                                    <span>Response Sample</span>
+                                    <span class="badge-status s200">200 OK</span>
+                                </div>
+                                <div class="code-snippet"><pre>{
+  "id": 1,
+  "name": "Budi Santoso",
+  "email": "budi@example.com",
+  "profile_pic": "uploads/profile_pics/user_1_avatar.jpg"
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PUT /api/auth/profile -->
+                <div class="endpoint-card" data-category="auth" data-method="PUT">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge put">PUT</span>
+                            <span class="endpoint-path">/api/auth/profile</span>
+                            <span class="endpoint-title">Perbarui Profil & Password</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge locked"><i class="fas fa-lock"></i> Bearer Token</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Memperbarui nama, email, password, dan foto profil. Format request menggunakan <code>multipart/form-data</code>.</p>
+                        <table class="spec-table">
+                            <thead>
+                                <tr><th>Field Form</th><th>Tipe</th><th>Wajib</th><th>Deskripsi</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="name">old_password</td><td class="type">string</td><td>Ya</td><td>Verifikasi password lama</td></tr>
+                                <tr><td class="name">name</td><td class="type">string</td><td>Tidak</td><td>Nama baru pengguna</td></tr>
+                                <tr><td class="name">password</td><td class="type">string</td><td>Tidak</td><td>Password baru yang diinginkan</td></tr>
+                                <tr><td class="name">profile_pic</td><td class="type">file</td><td>Tidak</td><td>File gambar (JPG, PNG)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ================= 2. AI VISION ================= -->
+                <!-- POST /api/predict-wayang -->
+                <div class="endpoint-card" data-category="ai-vision" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/predict-wayang</span>
+                            <span class="endpoint-title">Klasifikasi Tokoh Wayang dari Foto (Scan AI)</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengirim citra wayang via form-data untuk diklasifikasi oleh model Deep Learning (CNN/MobileNet). Mengembalikan nama tokoh, tingkat akurasi (confidence), dan deskripsi filosofis karakter.</p>
+                        <table class="spec-table">
+                            <thead>
+                                <tr><th>Parameter</th><th>Tipe</th><th>Format</th><th>Deskripsi</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="name">image</td><td class="type">file</td><td>multipart/form-data</td><td>File foto wayang (JPG/PNG maks 10MB)</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample (Berhasil)</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "status": "success",
+  "prediction": "Gatotkaca",
+  "confidence": 98.45,
+  "confidence_text": "98.45%",
+  "deskripsi": "Gatotkaca adalah ksatria perkasa dari Pringgandani, putra Werkudara yang berotot kawat bertulang besi.",
+  "gambar_referensi": "static/images/wayang/gatotkaca.png"
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 3. CHATBOT AI ================= -->
+                <!-- POST /api/chat-smart -->
+                <div class="endpoint-card" data-category="chatbot" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/chat-smart</span>
+                            <span class="endpoint-title">Percakapan Chatbot Cepot AI (LLM / RAG)</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Berinteraksi tanya jawab dengan tokoh punakawan Cepot menggunakan basis data budaya Wayanusa (RAG) atau Gemini Generative AI.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body</span></div>
+                                <div class="code-snippet"><pre>{
+  "message": "Siapakah Werkudara itu?",
+  "mode": "rag" // Opsi: "rag" atau "gemini"
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "response": "Sampurasun! Raden Werkudara atawa Bima teh putera kadua ti Pandawa Lima, satria perkasa di Jodipati anu jujur tur teu weléh ngabéla bebeneran!"
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /api/chat-rag -->
+                <div class="endpoint-card" data-category="chatbot" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/chat-rag</span>
+                            <span class="endpoint-title">RAG Vector Query Endpoint</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Endpoint khusus untuk pencarian berbasis vector embedding naskah lakon wayang.</p>
+                    </div>
+                </div>
+
+                <!-- ================= 4. SMART WAYANG IOT ================= -->
+                <!-- GET /api/cepot/ports -->
+                <div class="endpoint-card" data-category="iot" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/cepot/ports</span>
+                            <span class="endpoint-title">Daftar Port Serial USB / COM Arduino</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mendeteksi perangkat keras Arduino yang terhubung via kabel USB ke komputer/server.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "ports": ["COM3", "COM4"]
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /api/cepot/connect -->
+                <div class="endpoint-card" data-category="iot" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/cepot/connect</span>
+                            <span class="endpoint-title">Hubungkan Server ke Arduino Serial</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Membuka koneksi serial dengan mikrokontroler untuk mengontrol pergerakan fisik wayang.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body</span></div>
+                                <div class="code-snippet"><pre>{
+  "port": "COM3"
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "success": true,
+  "message": "Terhubung ke COM3"
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /api/cepot/talk -->
+                <div class="endpoint-card" data-category="iot" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/cepot/talk</span>
+                            <span class="endpoint-title">Kirim Suara / Perintah Gerak ke Wayang Fisik</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Memproses teks ucapan, membunyikan respon suara karakter, dan mengirimkan sinyal PWM ke motor servo wayang fisik.</p>
+                    </div>
+                </div>
+
+                <!-- ================= 5. ENSIKLOPEDIA & DALANG ================= -->
+                <!-- GET /api/wayang -->
+                <div class="endpoint-card" data-category="ensiklopedia" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/wayang</span>
+                            <span class="endpoint-title">Koleksi Tokoh Wayang</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil daftar seluruh karakter wayang yang terdaftar dalam basis pengetahuan.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "data": [
+    {
+      "id": 1,
+      "nama": "Arjuna",
+      "file": "static/images/wayang/arjuna.png"
+    },
+    {
+      "id": 2,
+      "nama": "Gatotkaca",
+      "file": "static/images/wayang/gatotkaca.png"
+    }
+  ]
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/dalang -->
+                <div class="endpoint-card" data-category="ensiklopedia" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/dalang</span>
+                            <span class="endpoint-title">Direktori & Lokasi Dalang Indonesia</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil daftar dalang nusantara lengkap dengan alamat dan koordinat geografis (Latitude, Longitude) untuk peta.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "data": [
+    {
+      "id": 1,
+      "nama": "Ki Manteb Soedharsono",
+      "alamat": "Karanganyar, Jawa Tengah",
+      "latitude": -7.5965,
+      "longitude": 110.9512,
+      "foto": "dalang_1.jpg"
+    }
+  ]
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/wayang-game -->
+                <div class="endpoint-card" data-category="ensiklopedia" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/wayang-game</span>
+                            <span class="endpoint-title">Aset Komponen Simulasi Wayang (Flutter 2D)</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengembalikan daftar aset potongan tubuh wayang (badan, tangan atas, tangan bawah) dengan URL penuh untuk simulasi interaktif.</p>
+                    </div>
+                </div>
+
+                <!-- ================= 6. QUIZ & LEADERBOARD ================= -->
+                <!-- GET /api/quiz/levels -->
+                <div class="endpoint-card" data-category="quiz" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/quiz/levels</span>
+                            <span class="endpoint-title">Tingkat Kesulitan Kuis</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil opsi level kuis (Beginner, Intermediate, Advanced, Expert) yang telah di-cache cepat di memori.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "levels": [
+    {"id": 1, "name": "Beginner"},
+    {"id": 2, "name": "Intermediate"},
+    {"id": 3, "name": "Advanced"},
+    {"id": 4, "name": "Expert"}
+  ]
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/quiz/get_questions -->
+                <div class="endpoint-card" data-category="quiz" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/quiz/get_questions</span>
+                            <span class="endpoint-title">Ambil 10 Soal Acak per Level</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil kumpulan soal pilihan ganda acak sesuai level yang ditentukan lewat query param <code>level</code>.</p>
+                        <table class="spec-table">
+                            <thead>
+                                <tr><th>Query Param</th><th>Tipe</th><th>Wajib</th><th>Contoh</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="name">level</td><td class="type">integer</td><td>Ya</td><td><code>?level=1</code></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "level_id": 1,
+  "total_questions": 10,
+  "questions": [
+    {
+      "id": 15,
+      "question": "Siapakah nama panah pusaka milik Arjuna?",
+      "a": "Pasopati",
+      "b": "Bratayuda",
+      "c": "Cakra",
+      "d": "Gada Rujakpala",
+      "correct_answer": "a"
+    }
+  ]
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /api/quiz/submit -->
+                <div class="endpoint-card" data-category="quiz" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/quiz/submit</span>
+                            <span class="endpoint-title">Submit Jawaban & Rekap Nilai Kuis</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public / Session</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Menyimpan rekap nilai sesi permainan kuis dan detail jawaban tiap butir soal ke database Supabase.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body</span></div>
+                                <div class="code-snippet"><pre>{
+  "user_id": 1,
+  "level_id": 1,
+  "score": 90,
+  "total_questions": 10,
+  "user_answers": [
+    {"question_id": 15, "user_answer": "a", "is_correct": true}
+  ]
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "message": "Hasil quiz berhasil disimpan!",
+  "result_id": 42
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/leaderboard -->
+                <div class="endpoint-card" data-category="quiz" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/leaderboard</span>
+                            <span class="endpoint-title">Papan Peringkat Kuis (Leaderboard)</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil ranking skor tertinggi pemain berdasarkan filter level (Beginner, Intermediate, Advanced, Expert).</p>
+                        <table class="spec-table">
+                            <thead>
+                                <tr><th>Query Param</th><th>Tipe</th><th>Nilai Valid</th><th>Bawaan</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="name">level</td><td class="type">string</td><td>Beginner, Intermediate, Advanced, Expert</td><td>Beginner</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ================= 7. MEDIA & ARTIKEL ================= -->
+                <!-- GET /api/videos -->
+                <div class="endpoint-card" data-category="media" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/videos</span>
+                            <span class="endpoint-title">Daftar Video Pertunjukan Wayang</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil daftar koleksi video YouTube pagelaran wayang lengkap dengan Thumbnail resolusi tinggi.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s200">200 OK</span></div>
+                                <div class="code-snippet"><pre>{
+  "status": "success",
+  "total": 4,
+  "data": [
+    {
+      "id": 1,
+      "judul": "Lakon Bharatayuda - Ki Manteb",
+      "youtube_id": "J_t9G2bWqYA",
+      "thumbnail": "https://img.youtube.com/vi/J_t9G2bWqYA/hqdefault.jpg"
+    }
+  ]
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/articles -->
+                <div class="endpoint-card" data-category="media" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/articles</span>
+                            <span class="endpoint-title">Daftar Artikel & Berita Budaya</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil daftar ringkasan artikel wawasan wayang diurutkan dari yang paling mutakhir.</p>
+                    </div>
+                </div>
+
+                <!-- GET /api/articles/{id} -->
+                <div class="endpoint-card" data-category="media" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/articles/<span class="param">{id}</span></span>
+                            <span class="endpoint-title">Detail Lengkap Konten Artikel</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil isi teks artikel lengkap beserta tautan sumber referensi.</p>
+                    </div>
+                </div>
+
+                <!-- ================= 8. ULASAN & SENTIMEN ================= -->
+                <!-- POST /api/ulasan -->
+                <div class="endpoint-card" data-category="ulasan" data-method="POST">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge post">POST</span>
+                            <span class="endpoint-path">/api/ulasan</span>
+                            <span class="endpoint-title">Kirim Ulasan dengan Prediksi Sentimen AI</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengirimkan feedback review pengguna. Kalimat ulasan akan dianalisis otomatis oleh model NLP AI (IndoBERT / Lexicon) untuk mendeteksi sentimen <code>positif</code>, <code>netral</code>, atau <code>negatif</code>.</p>
+                        <div class="detail-grid">
+                            <div>
+                                <div class="code-box-header"><span>Request Body</span></div>
+                                <div class="code-snippet"><pre>{
+  "nama_user": "Ahmad",
+  "rating": 5,
+  "komentar": "Aplikasi Wayanusa sangat keren dan edukatif untuk generasi muda!"
+}</pre></div>
+                            </div>
+                            <div>
+                                <div class="code-box-header"><span>Response Sample</span><span class="badge-status s201">201 CREATED</span></div>
+                                <div class="code-snippet"><pre>{
+  "message": "Ulasan berhasil dikirim",
+  "kategori_ai": "positif",
+  "confidence": 0.96
+}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /api/ulasan -->
+                <div class="endpoint-card" data-category="ulasan" data-method="GET">
+                    <div class="endpoint-header" onclick="toggleCard(this)">
+                        <div class="endpoint-left">
+                            <span class="method-badge get">GET</span>
+                            <span class="endpoint-path">/api/ulasan</span>
+                            <span class="endpoint-title">Daftar & Statistik Rata-rata Ulasan</span>
+                        </div>
+                        <div class="endpoint-right">
+                            <span class="auth-badge">🔓 Public</span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </div>
+                    </div>
+                    <div class="endpoint-detail">
+                        <p class="detail-desc">Mengambil rekap total ulasan, rata-rata rating bintang, dan riwayat ulasan publik.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="apidocs-footer">
+        <div class="container">
+            <p>&copy; 2024-2026 <strong>WAYANUSA</strong> - Melestarikan Budaya dengan Kecerdasan Buatan & IoT.</p>
+            <p style="margin-top: 6px; font-size: 0.8rem; color: #64748b;">
+                Endpoint terdaftar: 28 API • Format Respons: JSON • Server: Hugging Face Spaces / Python Flask
+            </p>
+        </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        // Otomatis set Base URL sesuai host saat ini
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentOrigin = window.location.origin;
+            const baseUrlElement = document.getElementById("baseUrlText");
+            if (baseUrlElement && currentOrigin) {
+                baseUrlElement.innerText = currentOrigin;
+            }
+            updateTotalCount();
+        });
+
+        // Toggle Single Card
+        function toggleCard(header) {
+            const card = header.closest(".endpoint-card");
+            card.classList.toggle("open");
+        }
+
+        // Toggle All Cards
+        function toggleAllCards(open) {
+            const cards = document.querySelectorAll(".endpoint-card");
+            cards.forEach(card => {
+                if (card.style.display !== "none") {
+                    if (open) {
+                        card.classList.add("open");
+                    } else {
+                        card.classList.remove("open");
+                    }
+                }
+            });
+        }
+
+        // Copy Base URL
+        function copyBaseUrl() {
+            const url = document.getElementById("baseUrlText").innerText;
+            navigator.clipboard.writeText(url).then(() => {
+                alert("Base URL berhasil disalin: " + url);
+            });
+        }
+
+        // Copy cURL or Snippet
+        function copySnippet(btn) {
+            const box = btn.closest(".curl-box");
+            const code = box.querySelector(".curl-code").innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+                btn.style.background = "#10B981";
+                btn.style.color = "#fff";
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = "";
+                    btn.style.color = "";
+                }, 2000);
+            });
+        }
+
+        // Filter by Category
+        let currentCategory = 'all';
+        let currentMethod = 'ALL';
+        let searchKeyword = '';
+
+        function filterCategory(category, el) {
+            currentCategory = category;
+            
+            // Update active state in sidebar
+            const items = document.querySelectorAll(".category-filter-item");
+            items.forEach(item => item.classList.remove("active"));
+            if (el) el.classList.add("active");
+
+            applyFilters();
+        }
+
+        // Filter by HTTP Method
+        function filterMethod(method, el) {
+            currentMethod = method;
+
+            const pills = document.querySelectorAll(".method-pill");
+            pills.forEach(pill => pill.classList.remove("active"));
+            if (el) el.classList.add("active");
+
+            applyFilters();
+        }
+
+        // Handle Search
+        function handleSearch(keyword) {
+            searchKeyword = keyword.toLowerCase().trim();
+            applyFilters();
+        }
+
+        // Combined Filter Engine
+        function applyFilters() {
+            const cards = document.querySelectorAll(".endpoint-card");
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute("data-category");
+                const cardMethod = card.getAttribute("data-method");
+                const cardText = card.innerText.toLowerCase();
+
+                const matchesCategory = (currentCategory === 'all' || cardCategory === currentCategory);
+                const matchesMethod = (currentMethod === 'ALL' || cardMethod === currentMethod);
+                const matchesSearch = (!searchKeyword || cardText.includes(searchKeyword));
+
+                if (matchesCategory && matchesMethod && matchesSearch) {
+                    card.style.display = "block";
+                    visibleCount++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            const countAll = document.getElementById("countAll");
+            if (countAll && currentCategory === 'all' && currentMethod === 'ALL' && !searchKeyword) {
+                countAll.innerText = visibleCount;
+            }
+        }
+
+        function updateTotalCount() {
+            const cards = document.querySelectorAll(".endpoint-card");
+            const countAll = document.getElementById("countAll");
+            if (countAll) countAll.innerText = cards.length;
+        }
+    </script>
+</body>
+
+</html>
+

@@ -1,5 +1,5 @@
 from fileinput import filename
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, send_from_directory, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, send_from_directory, current_app, jsonify
 from werkzeug.utils import secure_filename
 from functools import wraps
 import os
@@ -329,6 +329,46 @@ def smart_wayang():
         return redirect(url_for('web.login_user'))
         
     return render_template('smart_wayang.html')
+
+# =========================
+# API DOCUMENTATION ROUTES
+# =========================
+@web_routes.route('/apidocs')
+@web_routes.route('/api/docs')
+def apidocs():
+    return render_template('apidocs.html')
+
+@web_routes.route('/api/spec.json')
+def api_spec():
+    base_url = request.host_url.rstrip('/')
+    spec = {
+        "openapi": "3.0.3",
+        "info": {
+            "title": "WAYANUSA API Documentation",
+            "version": "2.0.0",
+            "description": "Dokumentasi Lengkap REST API Platform Pelestarian Wayang & Budaya Nusantara (WAYANUSA). Melayani kebutuhan Web, Mobile Flutter, Smart Physical AI Wayang, dan IoT.",
+            "contact": {
+                "name": "WAYANUSA Team",
+                "url": base_url
+            }
+        },
+        "servers": [
+            {"url": base_url, "description": "Current Host Server"},
+            {"url": "https://arya124-wayanusa-v2.hf.space", "description": "Hugging Face Production Space"},
+            {"url": "http://localhost:7860", "description": "Local Development Server"}
+        ],
+        "tags": [
+            {"name": "Auth", "description": "Autentikasi akun & profil pengguna (JWT & Google OAuth)"},
+            {"name": "AI Vision", "description": "Klasifikasi citra tokoh wayang (Deep Learning CNN / MobileNet)"},
+            {"name": "Chatbot & RAG", "description": "Asisten cerdas tokoh Cepot (Gemini AI & Retrieval-Augmented Generation)"},
+            {"name": "Smart Wayang IoT", "description": "Interaksi fisik wayang dengan mikrokontroler Arduino via Serial USB"},
+            {"name": "Ensiklopedia Wayang", "description": "Data master karakter wayang, profil dalang, dan komponen simulasi wayang"},
+            {"name": "Quiz & Gamifikasi", "description": "Tingkat level kuis, soal dinamis, submit jawaban, dan papan peringkat"},
+            {"name": "Media & Konten", "description": "Koleksi video pertunjukan wayang dan artikel wawasan budaya"},
+            {"name": "Ulasan & Sentimen", "description": "Review pengguna dengan analisis sentimen cerdas otomatis"}
+        ]
+    }
+    return jsonify(spec), 200
 
 # -------------------------
 # ADMIN ROUTES
