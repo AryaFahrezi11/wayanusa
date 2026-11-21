@@ -137,4 +137,17 @@ def reload_model(model_id):
         return False
 
 def get_model():
+    global _current_model
+    if _current_model is None:
+        try:
+            active_data = AIModel.query.filter_by(is_active=True).first()
+            if active_data:
+                full_path = get_absolute_path(active_data.file_path)
+                if os.path.exists(full_path):
+                    print(f"🔄 [AI MANAGER] Lazy loading active model: {active_data.version_name}")
+                    _silence_load_model(full_path)
+                else:
+                    print(f"⚠️ [AI MANAGER] File model tidak ditemukan di: {full_path}")
+        except Exception as e:
+            print(f"❌ [AI MANAGER] Error saat lazy load model: {e}")
     return _current_model

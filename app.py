@@ -71,6 +71,12 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 jwt = JWTManager(app)
 init_oauth(app)
 
+# Load Model AI saat booting Gunicorn / server
+try:
+    init_ai_model(app)
+except Exception as e:
+    print(f"⚠️ Warning AI Model Init: {e}")
+
 # 🔥 FIX LOGIN ROUTE 🔥
 login_manager = LoginManager()
 login_manager.init_app(app)
