@@ -33,8 +33,12 @@ app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY", "rahasia_super_aman")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 🔥 TAMBAHAN WAJIB UNTUK SUPABASE DI CLOUD
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'poolclass': NullPool}
+# # 🔥 TAMBAHAN WAJIB UNTUK SUPABASE DI CLOUD
+# app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'poolclass': NullPool}
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_recycle': 280,
+    'pool_pre_ping': True
+}
 
 # Cek apakah berjalan di Cloud (Hugging Face) atau di Laptop (Lokal)
 IS_CLOUD = os.getenv("IS_CLOUD", "false").lower() == "true"
