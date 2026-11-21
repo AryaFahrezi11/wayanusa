@@ -7,6 +7,16 @@
     --text-muted: #a0a0a0;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100%;
+}
+
 body {
     background: var(--dark-bg);
     color: var(--text-main);
@@ -17,20 +27,24 @@ body {
 .main-content {
     padding-top: 80px;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .ulasan-section {
     max-width: 900px;
     margin: auto;
     padding: 40px 20px 80px;
+    width: 100%;
 }
 
 .rating-summary {
     background: linear-gradient(145deg,#151515,#0a0a0a);
+    border: 1px solid rgba(212, 163, 115, 0.2);
     border-radius: 24px;
     padding: 40px;
     text-align: center;
     margin-bottom: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .big-rating-number {
@@ -50,14 +64,23 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     margin-bottom: 60px;
+    width: 100%;
 }
 
 .review-card {
     background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 16px;
     padding: 25px;
     display: flex;
     gap: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 163, 115, 0.4);
 }
 
 .avatar {
@@ -65,27 +88,39 @@ body {
     height: 55px;
     border-radius: 50%;
     background: #111;
+    border: 1px solid var(--gold);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--gold);
     font-weight: 600;
+    flex-shrink: 0;
+}
+
+.review-content {
+    flex: 1;
+    min-width: 0; /* Mencegah flex child memaksakan lebar berlebih */
 }
 
 .reviewer-name {
     font-weight: 600;
     font-size: 1.1rem;
+    display: block;
+    word-break: break-word;
 }
 
 .review-text {
     color: #d1d1d1;
     margin: 10px 0;
+    word-break: break-word;
+    line-height: 1.5;
 }
 
 .review-date {
     font-size: 0.8rem;
     color: #666;
     text-align: right;
+    display: block;
 }
 
 /* ⭐ STAR DISPLAY */
@@ -99,8 +134,17 @@ body {
 
 .form-wrapper {
     background: #0f0f0f;
+    border: 1px solid rgba(212, 163, 115, 0.2);
     border-radius: 24px;
     padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.form-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 6px;
 }
 
 .star-input-group {
@@ -132,14 +176,121 @@ body {
     border: 1px solid #333;
     color: white;
     resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+.custom-textarea:focus {
+    outline: none;
+    border-color: var(--gold);
 }
 
 .btn-submit {
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     border-radius: 50px;
     border: none;
     font-weight: 700;
+    font-size: 1rem;
     background: linear-gradient(135deg,var(--gold),var(--gold-hover));
     cursor: pointer;
+    color: #000;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(212, 163, 115, 0.4);
+}
+
+/* =========================================
+   RESPONSIVE MOBILE & TABLET
+   ========================================= */
+@media (max-width: 900px) {
+    .reviews-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+}
+
+@media (max-width: 680px) {
+    .main-content {
+        padding-top: 85px;
+    }
+
+    .ulasan-section {
+        padding: 20px 14px 60px;
+    }
+
+    .rating-summary {
+        padding: 28px 16px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+    }
+
+    .big-rating-number {
+        font-size: 3.8rem;
+    }
+
+    .big-stars {
+        font-size: 1.3rem;
+        margin: 6px 0;
+    }
+
+    .reviews-container {
+        grid-template-columns: 1fr; /* 1 Kolom Penuh di HP agar kartu tidak terpotong */
+        gap: 14px;
+        margin-bottom: 35px;
+    }
+
+    .review-card {
+        padding: 16px 14px;
+        border-radius: 14px;
+        gap: 12px;
+    }
+
+    .avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 1rem;
+    }
+
+    .reviewer-name {
+        font-size: 0.98rem;
+    }
+
+    .review-text {
+        font-size: 0.88rem;
+    }
+
+    .form-wrapper {
+        padding: 24px 16px;
+        border-radius: 18px;
+    }
+
+    .form-title {
+        font-size: 1.25rem;
+    }
+
+    .star-input-group {
+        gap: 12px;
+        margin: 15px 0 20px;
+    }
+
+    .star-input-group i {
+        font-size: 1.8rem;
+    }
+
+    .custom-textarea {
+        padding: 14px;
+        font-size: 0.88rem;
+        min-height: 120px;
+    }
+
+    .btn-submit {
+        padding: 14px;
+        font-size: 0.92rem;
+    }
 }

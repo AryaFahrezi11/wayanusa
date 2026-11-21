@@ -249,17 +249,330 @@
             object-fit: contain;
             pointer-events: none;
         }
+
+        /* =========================================
+           6. TOMBOL LANSKAP & NOTIFIKASI ORIENTASI
+           ========================================= */
+        .btn-landscape-mode {
+            position: fixed;
+            top: 25px;
+            right: 85px;
+            z-index: 1002;
+            background: rgba(20, 20, 20, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 163, 115, 0.4);
+            color: #D4A373;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-landscape-mode:hover {
+            background: #D4A373;
+            color: #000;
+            border-color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .rotate-notice-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 5, 0.92);
+            backdrop-filter: blur(14px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .rotate-notice-card {
+            background: #141416;
+            border: 1.5px solid rgba(212, 163, 115, 0.35);
+            border-radius: 22px;
+            padding: 30px 24px;
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 163, 115, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rotate-anim-box {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .phone-icon {
+            font-size: 3rem;
+            color: #D4A373;
+            animation: rotatePhone 2.5s infinite ease-in-out;
+        }
+
+        .arrow-icon {
+            position: absolute;
+            font-size: 1.4rem;
+            color: #fff;
+            animation: spinArrow 2.5s infinite linear;
+        }
+
+        @keyframes rotatePhone {
+            0%, 20% { transform: rotate(0deg); }
+            50%, 80% { transform: rotate(-90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes spinArrow {
+            0% { transform: rotate(0deg); opacity: 0.8; }
+            50% { transform: rotate(-180deg); opacity: 1; }
+            100% { transform: rotate(-360deg); opacity: 0.8; }
+        }
+
+        .rotate-notice-card h4 {
+            color: #D4A373;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .rotate-notice-card p {
+            color: #ccc;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .rotate-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-rotate-now {
+            background: linear-gradient(135deg, #D4A373, #B88656);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 13px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .btn-rotate-now:hover {
+            box-shadow: 0 0 20px rgba(212, 163, 115, 0.5);
+            transform: scale(1.02);
+        }
+
+        .btn-rotate-skip {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #888;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-rotate-skip:hover {
+            color: #fff;
+            border-color: #666;
+        }
+
+        /* Munculkan prompt jika smartphone dalam posisi tegak (potret) */
+        @media (max-width: 900px) and (orientation: portrait) {
+            .rotate-notice-overlay.active {
+                display: flex;
+            }
+        }
+
+        /* =========================================
+           7. RESPONSIVE POTRET (SMARTPHONE TEGAK)
+           ========================================= */
+        @media (max-width: 768px) {
+            .btn-landscape-mode {
+                top: 20px;
+                right: 75px;
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
+            .stage-area {
+                top: 85px;
+                width: 95vw;
+                height: 65vh;
+                max-height: calc(100vh - 170px);
+                border: 4px solid #8B5A2B;
+                border-bottom: 10px solid #5C3A21;
+                border-radius: 12px 12px 4px 4px;
+            }
+
+            .wayang {
+                width: 190px;
+                height: 310px;
+                transform-origin: top left;
+            }
+
+            .wayang .tangan.kanan { left: 125px; top: 72px; }
+            .wayang .tangan.kiri { left: 18px; top: 96px; }
+
+            .wayang .lengan-atas {
+                width: 44px;
+                height: 88px;
+                transform-origin: 27px 5px;
+            }
+
+            .wayang .lengan-bawah {
+                top: 77px;
+                width: 58px;
+                height: 95px;
+                transform-origin: 22px 3px;
+            }
+
+            .wayang .lengan-bawah img {
+                left: -30px;
+                top: -4px;
+            }
+
+            .btn-add {
+                bottom: 20px;
+                right: 20px;
+                width: 52px;
+                height: 52px;
+                font-size: 20px;
+            }
+
+            .trash-bin {
+                bottom: 15px;
+                left: 15px;
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+
+            .wayang-list {
+                bottom: 18px;
+                max-width: 94vw;
+                padding: 14px 16px;
+                gap: 12px;
+                border-radius: 16px;
+            }
+
+            .wayang-slot {
+                width: 72px;
+                height: 105px;
+            }
+        }
+
+        /* =========================================
+           8. RESPONSIVE LANSKAP (PANGGUNG LEBAR HORIZONTAL)
+           ========================================= */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .navbar {
+                display: none !important; /* Hilangkan navbar di mode lanskap HP agar layar 100% untuk panggung */
+            }
+
+            .btn-landscape-mode {
+                top: 12px;
+                right: 15px;
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
+            .stage-area {
+                top: 10px !important;
+                width: 96vw !important;
+                height: 92vh !important;
+                max-height: 94vh !important;
+                border: 4px solid #8B5A2B !important;
+                border-bottom: 10px solid #5C3A21 !important;
+            }
+
+            .btn-add {
+                bottom: 16px !important;
+                right: 20px !important;
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 20px !important;
+            }
+
+            .trash-bin {
+                bottom: 14px !important;
+                left: 18px !important;
+                width: 42px !important;
+                height: 42px !important;
+                font-size: 16px !important;
+            }
+
+            .wayang-list {
+                bottom: 15px !important;
+                max-width: 80vw !important;
+                padding: 10px 15px !important;
+            }
+
+            .wayang-slot {
+                width: 70px !important;
+                height: 100px !important;
+            }
+        }
     </style>
 </head>
 
 <body>
     {% include 'layouts/navbar.html' %}
 
+    <!-- TOMBOL CEPAT MODE LANSKAP / LAYAR PENUH -->
+    <button class="btn-landscape-mode" id="btnLandscape" onclick="toggleLandscapeMode()" title="Mode Panggung Lanskap Penuh">
+        <i class="fas fa-expand"></i> <span class="landscape-btn-text">Lanskap</span>
+    </button>
+
+    <!-- NOTIFIKASI PUTAR KE LANSKAP (MUNCUL OTOMATIS SAAT HP DALAM POSISI TEGAK) -->
+    <div id="rotateNotice" class="rotate-notice-overlay">
+        <div class="rotate-notice-card">
+            <div class="rotate-anim-box">
+                <i class="fas fa-mobile-alt phone-icon"></i>
+                <i class="fas fa-sync-alt arrow-icon"></i>
+            </div>
+            <h4>Mode Panggung Wayang</h4>
+            <p>Untuk panggung yang luas dan leluasa dimainkan, silakan putar smartphone Anda ke posisi <strong>Lanskap (Horizontal)</strong>.</p>
+            <div class="rotate-actions">
+                <button class="btn-rotate-now" onclick="toggleLandscapeMode()">
+                    <i class="fas fa-expand-arrows-alt"></i> Buka Layar Penuh (Lanskap)
+                </button>
+                <button class="btn-rotate-skip" onclick="dismissRotateNotice()">
+                    Tetap di Mode Potret
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="panggung"></div>
 
     <div class="stage-area" id="stageArea">
         <div class="tirai-area"></div>
-        <div class="trash-bin" id="trashBin"><i class="fas fa-trash-alt"></i></div>
+        <div class="trash-bin" id="trashBin" title="Tarik wayang ke sini untuk menghapus"><i class="fas fa-trash-alt"></i></div>
     </div>
 
     <div class="wayang-list" id="wayangList">
@@ -276,7 +589,7 @@
         {% endfor %}
     </div>
 
-    <button class="btn-add" id="btnAdd"><i class="fas fa-box-open"></i></button>
+    <button class="btn-add" id="btnAdd" title="Buka Kotak Wayang"><i class="fas fa-box-open"></i></button>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -289,7 +602,6 @@
             // Toggle Laci
             btnAdd.onclick = () => {
                 wayangList.classList.toggle("show");
-                // Ganti icon saat buka/tutup
                 if(wayangList.classList.contains("show")) {
                     btnAdd.innerHTML = '<i class="fas fa-times"></i>';
                 } else {
@@ -297,48 +609,29 @@
                 }
             };
 
-            // Setup Dragging Slot
-            document.querySelectorAll(".wayang-slot").forEach(slot => {
-                // 1. Saat mulai ditarik, biarkan laci tetap terbuka
-                slot.addEventListener("dragstart", (e) => { 
-                    draggedSlot = slot; 
-                });
-
-                // 2. Saat tarikan selesai (wayang dilepas ke panggung), baru lacinya ditutup
-                slot.addEventListener("dragend", () => {
-                    wayangList.classList.remove("show");
-                    btnAdd.innerHTML = '<i class="fas fa-box-open"></i>';
-                });
-            });
-
-            stage.addEventListener("dragover", e => e.preventDefault());
-
-            stage.addEventListener("drop", e => {
-                e.preventDefault();
-                if (!draggedSlot) return;
-                const rect = stage.getBoundingClientRect();
-
+            // Fungsi Membuat Wayang ke Panggung
+            function spawnWayang(dataBadan, dataTka, dataTkb, dataTla, dataTlb, x, y) {
                 const wayang = document.createElement("div");
                 wayang.className = "wayang";
-                wayang.style.left = (e.clientX - rect.left - 45) + "px";
-                wayang.style.top = (e.clientY - rect.top - 70) + "px";
+                wayang.style.left = x + "px";
+                wayang.style.top = y + "px";
                 wayang.flipped = false;
 
                 wayang.innerHTML = `
-                <img class="badan" src="${draggedSlot.dataset.badan}">
+                <img class="badan" src="${dataBadan}">
                 <div class="tangan kanan">
                     <div class="lengan-atas">
-                        <img src="${draggedSlot.dataset.tka}">
+                        <img src="${dataTka}">
                         <div class="lengan-bawah">
-                            <img src="${draggedSlot.dataset.tkb}">
+                            <img src="${dataTkb}">
                         </div>
                     </div>
                 </div>
                 <div class="tangan kiri">
                     <div class="lengan-atas">
-                        <img src="${draggedSlot.dataset.tla}">
+                        <img src="${dataTla}">
                         <div class="lengan-bawah">
-                            <img src="${draggedSlot.dataset.tlb}">
+                            <img src="${dataTlb}">
                         </div>
                     </div>
                 </div>
@@ -350,8 +643,6 @@
                 fallDown(wayang);
                 enableDoubleClickFlip(wayang);
 
-                draggedSlot = null;
-
                 // Pose Awal
                 const tKA = wayang.querySelector('.tangan.kanan .lengan-atas');
                 const tKB = wayang.querySelector('.tangan.kanan .lengan-bawah');
@@ -362,41 +653,112 @@
                 if(tKB) tKB.style.transform = 'rotate(-55deg)';
                 if(tLA) tLA.style.transform  = 'rotate(25deg)';
                 if(tLB) tLB.style.transform  = 'rotate(35deg)';
+            }
+
+            // Setup Wayang Slot (Bisa Drag di Desktop & Tap 1x di HP)
+            document.querySelectorAll(".wayang-slot").forEach(slot => {
+                // Desktop Drag & Drop
+                slot.addEventListener("dragstart", () => { 
+                    draggedSlot = slot; 
+                });
+                slot.addEventListener("dragend", () => {
+                    wayangList.classList.remove("show");
+                    btnAdd.innerHTML = '<i class="fas fa-box-open"></i>';
+                });
+
+                // Mobile Friendly: Cukup sentuh slot untuk spawn ke panggung!
+                slot.addEventListener("click", () => {
+                    const rect = stage.getBoundingClientRect();
+                    const spawnX = Math.max(15, (rect.width / 2) - 80);
+                    const spawnY = Math.max(15, (rect.height / 2) - 100);
+                    spawnWayang(
+                        slot.dataset.badan,
+                        slot.dataset.tka,
+                        slot.dataset.tkb,
+                        slot.dataset.tla,
+                        slot.dataset.tlb,
+                        spawnX,
+                        spawnY
+                    );
+                    wayangList.classList.remove("show");
+                    btnAdd.innerHTML = '<i class="fas fa-box-open"></i>';
+                });
             });
 
-            // LOGIKA DRAG & DROP DALAM PANGGUNG (Tidak diubah, murni buatan Mas)
+            stage.addEventListener("dragover", e => e.preventDefault());
+
+            stage.addEventListener("drop", e => {
+                e.preventDefault();
+                if (!draggedSlot) return;
+                const rect = stage.getBoundingClientRect();
+                const spawnX = e.clientX - rect.left - 45;
+                const spawnY = e.clientY - rect.top - 70;
+                spawnWayang(
+                    draggedSlot.dataset.badan,
+                    draggedSlot.dataset.tka,
+                    draggedSlot.dataset.tkb,
+                    draggedSlot.dataset.tla,
+                    draggedSlot.dataset.tlb,
+                    spawnX,
+                    spawnY
+                );
+                draggedSlot = null;
+            });
+
+            // LOGIKA DRAG & DROP DALAM PANGGUNG (Mendukung Mouse & Touch Layar HP)
             function enableStageDrag(el) {
                 let isDrag = false, offsetX = 0, offsetY = 0;
-                el.addEventListener("mousedown", e => {
+
+                function startDrag(clientX, clientY) {
                     isDrag = true;
-                    offsetX = e.offsetX;
-                    offsetY = e.offsetY;
+                    const r = el.getBoundingClientRect();
+                    offsetX = clientX - r.left;
+                    offsetY = clientY - r.top;
                     el.falling = false;
-                    document.addEventListener("mousemove", move);
-                    document.addEventListener("mouseup", up);
-                });
-                function move(e) {
+                }
+
+                function moveDrag(clientX, clientY) {
                     if (!isDrag) return;
                     const r = stage.getBoundingClientRect();
-                    let x = e.clientX - r.left - offsetX;
-                    let y = e.clientY - r.top - offsetY;
+                    let x = clientX - r.left - offsetX;
+                    let y = clientY - r.top - offsetY;
                     x = Math.max(0, Math.min(r.width - el.clientWidth, x));
                     y = Math.max(0, Math.min(r.height - el.clientHeight, y));
                     el.style.left = x + "px";
                     el.style.top = y + "px";
                     trash.classList.toggle("active", isOverTrash(el));
                 }
-                function up() {
+
+                function stopDrag() {
+                    if (!isDrag) return;
                     isDrag = false;
                     if (isOverTrash(el)) el.remove();
                     else fallDown(el);
                     trash.classList.remove("active");
-                    document.removeEventListener("mousemove", move);
-                    document.removeEventListener("mouseup", up);
                 }
+
+                // Event Mouse
+                el.addEventListener("mousedown", e => { startDrag(e.clientX, e.clientY); });
+                document.addEventListener("mousemove", e => { if(isDrag) moveDrag(e.clientX, e.clientY); });
+                document.addEventListener("mouseup", stopDrag);
+
+                // Event Touch Layar Sentuh HP
+                el.addEventListener("touchstart", e => {
+                    if (e.touches.length === 1) {
+                        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+                    }
+                }, { passive: true });
+
+                document.addEventListener("touchmove", e => {
+                    if (isDrag && e.touches.length === 1) {
+                        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+                    }
+                }, { passive: true });
+
+                document.addEventListener("touchend", stopDrag);
             }
 
-            // LOGIKA ROTASI SENDI (Tidak diubah)
+            // LOGIKA ROTASI SENDI TANGAN (Mouse & Touch HP)
             function aktifkanRotasiTangan(wayang) {
                 wayang.querySelectorAll('.lengan-atas').forEach(atas => {
                     const bawah = atas.querySelector('.lengan-bawah');
@@ -406,15 +768,53 @@
 
             function aktifkanSendi(atas, bawah) {
                 let startY=0, startAtas=0, startBawah=0, mode=null;
-                atas.addEventListener('mousedown', e=>{ e.stopPropagation(); mode='atas'; startY=e.clientY; startAtas=getRotation(atas); startBawah=getRotation(bawah); bind(); });
-                bawah.addEventListener('mousedown', e=>{ e.stopPropagation(); mode='bawah'; startY=e.clientY; startAtas=getRotation(atas); startBawah=getRotation(bawah); bind(); });
-                function bind(){ document.addEventListener('mousemove', move); document.addEventListener('mouseup', unbind); }
-                function move(e){
-                    const delta = startY - e.clientY;
-                    if(mode==='atas'){ atas.style.transform = `rotate(${startAtas + delta*0.6}deg)`; bawah.style.transform = `rotate(${startBawah + delta*0.85}deg)`; }
-                    if(mode==='bawah'){ bawah.style.transform = `rotate(${startBawah + delta}deg)`; atas.style.transform = `rotate(${startAtas + delta*0.4}deg)`; }
+
+                function startJoint(y, selectedMode) {
+                    mode = selectedMode;
+                    startY = y;
+                    startAtas = getRotation(atas);
+                    startBawah = getRotation(bawah);
                 }
-                function unbind(){ document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', unbind); }
+
+                function moveJoint(y) {
+                    if(!mode) return;
+                    const delta = startY - y;
+                    if(mode==='atas'){
+                        atas.style.transform = `rotate(${startAtas + delta*0.6}deg)`;
+                        bawah.style.transform = `rotate(${startBawah + delta*0.85}deg)`;
+                    }
+                    if(mode==='bawah'){
+                        bawah.style.transform = `rotate(${startBawah + delta}deg)`;
+                        atas.style.transform = `rotate(${startAtas + delta*0.4}deg)`;
+                    }
+                }
+
+                function stopJoint() {
+                    mode = null;
+                }
+
+                // Mouse
+                atas.addEventListener('mousedown', e => { e.stopPropagation(); startJoint(e.clientY, 'atas'); });
+                bawah.addEventListener('mousedown', e => { e.stopPropagation(); startJoint(e.clientY, 'bawah'); });
+                document.addEventListener('mousemove', e => { if(mode) moveJoint(e.clientY); });
+                document.addEventListener('mouseup', stopJoint);
+
+                // Touch
+                atas.addEventListener('touchstart', e => {
+                    e.stopPropagation();
+                    if(e.touches.length === 1) startJoint(e.touches[0].clientY, 'atas');
+                }, { passive: true });
+
+                bawah.addEventListener('touchstart', e => {
+                    e.stopPropagation();
+                    if(e.touches.length === 1) startJoint(e.touches[0].clientY, 'bawah');
+                }, { passive: true });
+
+                document.addEventListener('touchmove', e => {
+                    if(mode && e.touches.length === 1) moveJoint(e.touches[0].clientY);
+                }, { passive: true });
+
+                document.addEventListener('touchend', stopJoint);
             }
 
             function getRotation(el){
@@ -426,7 +826,6 @@
 
             function isOverTrash(el){
                 const w=el.getBoundingClientRect(), t=trash.getBoundingClientRect();
-                // Memberi sedikit margin agar lebih pas
                 return !(w.right < t.left - 20 || w.left > t.right + 20 || w.bottom < t.top - 20 || w.top > t.bottom + 20);
             }
 
@@ -443,13 +842,65 @@
             }
 
             function enableDoubleClickFlip(wayang){
-                wayang.addEventListener('dblclick', ()=>{
-                    wayang.flipped = !wayang.flipped;
-                    if(wayang.flipped) wayang.style.transform += ' scaleX(-1)';
-                    else wayang.style.transform = wayang.style.transform.replace(' scaleX(-1)','');
+                // Double Click / Double Tap untuk membalik hadap wayang
+                let lastTap = 0;
+                wayang.addEventListener('click', (e) => {
+                    const now = Date.now();
+                    if (now - lastTap < 300) {
+                        wayang.flipped = !wayang.flipped;
+                        if(wayang.flipped) wayang.style.transform += ' scaleX(-1)';
+                        else wayang.style.transform = wayang.style.transform.replace(' scaleX(-1)','');
+                    }
+                    lastTap = now;
                 });
             }
         });
+
+        // --- FITUR AUTO LANDSCAPE & FULLSCREEN ---
+        let rotateDismissed = false;
+
+        function checkOrientation() {
+            const isPortraitMobile = window.matchMedia("(max-width: 900px) and (orientation: portrait)").matches;
+            const notice = document.getElementById("rotateNotice");
+            if (notice) {
+                if (isPortraitMobile && !rotateDismissed) {
+                    notice.classList.add("active");
+                } else {
+                    notice.classList.remove("active");
+                }
+            }
+        }
+
+        function dismissRotateNotice() {
+            rotateDismissed = true;
+            const notice = document.getElementById("rotateNotice");
+            if (notice) notice.classList.remove("active");
+        }
+
+        async function toggleLandscapeMode() {
+            try {
+                // 1. Masuk Fullscreen
+                if (!document.fullscreenElement) {
+                    if (document.documentElement.requestFullscreen) {
+                        await document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        await document.documentElement.webkitRequestFullscreen();
+                    }
+                }
+                // 2. Kunci orientasi ke Landscape (didukung oleh Android Chrome/Edge/Firefox)
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape').catch(() => {});
+                }
+                dismissRotateNotice();
+            } catch (e) {
+                console.log("Fullscreen/Lock error:", e);
+                dismissRotateNotice();
+            }
+        }
+
+        window.addEventListener("resize", checkOrientation);
+        window.addEventListener("orientationchange", checkOrientation);
+        setTimeout(checkOrientation, 350);
     </script>
 </body>
 </html>

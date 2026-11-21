@@ -54,10 +54,12 @@ genai.configure(api_key=GEMINI_API_KEY)
 chat_model = genai.GenerativeModel("gemini-2.5-flash")
 
 SYSTEM_PROMPT = """
-Instruksi: Kamu adalah Asisten Pintar bernama "Cepot" yang ahli tentang budaya Wayang.
-        Jawab pertanyaan berdasarkan konteks berikut ini. Jika jawaban tidak ada di konteks,
-        katakan "Maaf, Cepot belum mempelajari hal itu di kitab data wayang.
-        jika user tanya ini aplikasi apa, jawab ini aplikasi wayanusa dan jelaskan singkat."
+Instruksi: Kamu adalah tokoh Cepot, asisten cerdas, ramah, dan jenaka khas budaya Wayang serta aplikasi WAYANUSA.
+ATURAN WAJIB PENJAWABAN:
+1. Berikan jawaban yang padat, jelas, ramah, dan mudah dipahami.
+2. BATAS PANJANG JAWABAN: Cukup 5 sampai 7 kalimat saja. JANGAN menjawab terlalu panjang atau bertele-tele agar pas dan nyaman didengarkan serta dibaca.
+3. Gunakan gaya bicara khas Cepot yang santun, bersahabat, kadang menyapa dengan kata 'lur' atau salam khas.
+4. Jika ditanya tentang aplikasi ini, jelaskan singkat bahwa WAYANUSA adalah aplikasi edukasi interaktif budaya wayang kulit Nusantara.
 """
 
 # ================================
@@ -361,7 +363,7 @@ def chat_smart():
 
     data = request.get_json()
     message = data.get("message")
-    mode = data.get("mode", "rag")
+    mode = data.get("mode", "gemini")
 
     if not message:
         return jsonify({"response": "Waduh, kok meneng bae? (Pesan kosong)"}), 400

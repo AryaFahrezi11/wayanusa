@@ -306,12 +306,165 @@
         }
 
         /* Hidden File Input */
-        #fileInput { display: none; }
+        #fileInput, #cameraInput { display: none; }
+
+        /* CAMERA MODAL */
+        .camera-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .camera-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .camera-modal-content {
+            background: #14151a;
+            border: 1.5px solid rgba(212, 163, 115, 0.4);
+            border-radius: 22px;
+            width: 92%;
+            max-width: 420px; /* Lebar potret */
+            padding: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(212, 163, 115, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+        }
+
+        .camera-header h4 {
+            margin: 0;
+            font-size: 1.05rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .camera-close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ccc;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-close-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .camera-viewfinder {
+            position: relative;
+            width: 100%;
+            height: 500px; /* Bentuk Potret Vertikal Tinggi */
+            max-height: 68vh;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Target Frame in Viewfinder (Potret Sesuai Bentuk Wayang) */
+        .camera-target-box {
+            position: absolute;
+            width: 80%;
+            height: 86%;
+            pointer-events: none;
+            border-radius: 12px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+        }
+
+        .target-corner {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-color: var(--gold);
+            border-style: solid;
+        }
+
+        .target-corner.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+        .target-corner.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+        .target-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+        .target-corner.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+        .camera-scan-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            box-shadow: 0 0 10px var(--gold);
+            animation: scan 2.2s infinite ease-in-out;
+        }
+
+        .camera-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-switch-cam {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .btn-switch-cam:hover {
+            background: var(--gold);
+            color: #000;
+        }
 
         /* Responsive */
         @media (max-width: 600px) {
             .option-grid { grid-template-columns: 1fr; }
             .preview-box { height: 250px; }
+            .camera-viewfinder { height: 440px; }
         }
     </style>
 </head>
@@ -352,6 +505,7 @@
                         <span class="option-title">Upload Galeri</span>
                     </label>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleFileUpload(event)">
                 </div>
             </div>
 
@@ -396,6 +550,36 @@
 
         </div>
     </section>
+
+    <!-- CAMERA MODAL (WEBCAM / KAMERA LANGSUNG) -->
+    <div id="cameraModal" class="camera-modal">
+        <div class="camera-modal-content">
+            <div class="camera-header">
+                <h4><i class="fas fa-camera"></i> Arahkan Kamera ke Wayang</h4>
+                <button class="camera-close-btn" onclick="closeCamera()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="camera-viewfinder">
+                <video id="cameraVideo" autoplay playsinline muted></video>
+                <canvas id="cameraCanvas" style="display: none;"></canvas>
+                <div class="camera-target-box">
+                    <div class="target-corner tl"></div>
+                    <div class="target-corner tr"></div>
+                    <div class="target-corner bl"></div>
+                    <div class="target-corner br"></div>
+                    <div class="camera-scan-bar"></div>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button class="btn-secondary" onclick="closeCamera()">Batal</button>
+                <button class="btn-main" onclick="capturePhoto()">
+                    <i class="fas fa-camera"></i> Jepret Foto
+                </button>
+                <button class="btn-switch-cam" onclick="switchCamera()" title="Putar Kamera Depan/Belakang">
+                    <i class="fas fa-rotate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer style="background: #000; color: #666; padding: 40px 0; text-align: center; border-top: 1px solid #222;">
         <div class="container">
@@ -478,10 +662,91 @@
             }
         }
 
-        // 2. Handle Camera (Simulasi klik input file kamera di HP)
-        function openCamera() {
-            // Di HP, input type file bisa akses kamera
-            document.getElementById('fileInput').click();
+        // 2. Handle Camera (Live Camera WebCam / Kamera HP Langsung)
+        let mediaStream = null;
+        let currentFacingMode = 'environment'; // Kamera belakang default
+
+        async function openCamera() {
+            // Cek apakah browser mendukung getUserMedia
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const constraints = {
+                        video: {
+                            facingMode: currentFacingMode,
+                            width: { ideal: 720 },
+                            height: { ideal: 1280 }
+                        }
+                    };
+                    mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+                    const video = document.getElementById('cameraVideo');
+                    video.srcObject = mediaStream;
+                    await video.play();
+
+                    document.getElementById('cameraModal').classList.add('active');
+                    return;
+                } catch (err) {
+                    console.warn("Akses kamera via WebRTC ditolak atau tidak tersedia:", err);
+                    // Fallback jika ditolak atau browser HP tidak mendukung live stream:
+                    // Buka native camera app via capture="environment"
+                    document.getElementById('cameraInput').click();
+                }
+            } else {
+                // Fallback untuk browser lawas: buka input kamera HP langsung
+                document.getElementById('cameraInput').click();
+            }
+        }
+
+        function closeCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            const video = document.getElementById('cameraVideo');
+            if (video) video.srcObject = null;
+            document.getElementById('cameraModal').classList.remove('active');
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            if (!video || !canvas) return;
+
+            // Set ukuran canvas sesuai resolusi video aktif
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Ubah canvas ke Blob file
+            canvas.toBlob(function(blob) {
+                if (blob) {
+                    const capturedFile = new File([blob], "wayang_scan.jpg", { type: "image/jpeg" });
+                    closeCamera();
+                    processFile(capturedFile);
+                }
+            }, 'image/jpeg', 0.95);
+        }
+
+        async function switchCamera() {
+            currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: currentFacingMode,
+                        width: { ideal: 720 },
+                        height: { ideal: 1280 }
+                    }
+                });
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = mediaStream;
+                await video.play();
+            } catch (e) {
+                console.error("Gagal switch kamera:", e);
+            }
         }
 
         function processFile(file) {

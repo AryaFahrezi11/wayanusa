@@ -36,8 +36,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 🔥 TAMBAHAN WAJIB UNTUK SUPABASE DI CLOUD
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'poolclass': NullPool}
 
-# Cache static files di browser selama 1 tahun
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60 * 60 * 24 * 365
+# Cek apakah berjalan di Cloud (Hugging Face) atau di Laptop (Lokal)
+IS_CLOUD = os.getenv("IS_CLOUD", "false").lower() == "true"
+
+if not IS_CLOUD:
+    # Mode Lokal / Development: Auto-reload template & jangan cache static files
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+else:
+    # Mode Cloud: Cache static files di browser selama 1 tahun
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60 * 60 * 24 * 365
 
 # Upload Config
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -89,11 +97,19 @@ app.register_blueprint(leaderboard_wayang_bp)
 
 # 5. RUN SERVER
 if __name__ == "__main__":
-    try:
-        init_ai_model(app)
-    except Exception as e:
-        print(f"⚠️ Warning AI: {e}")
+    is_cloud = os.getenv("IS_CLOUD", "false").lower() == "true"
 
-    print("🚀 Server Jalan di Port 7860 untuk Hugging Face...")
-    # Matikan debug mode di cloud agar tidak ada proses ganda
-    app.run(debug=False, use_reloader=False, host='0.0.0.0', port=7860)
+    # Muat model AI (pada mode auto-reload/debug, hanya dimuat pada proses worker Werkzeug)
+    if is_cloud or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        try:
+            init_ai_model(app)
+        except Exception as e:
+            print(f"⚠️ Warning AI: {e}")
+
+    if is_cloud:
+        print("🚀 Server Jalan di Port 7860 untuk Hugging Face / Cloud...")
+        # Matikan debug mode di cloud agar aman dan tidak memakan resource ganda
+        app.run(debug=False, use_reloader=False, host='0.0.0.0', port=7860)
+    else:
+        print("⚡ [AUTO-RELOAD AKTIF] Perubahan kode (.py, .html, .css, .js) otomatis ter-update tanpa perlu mematikan server!")
+        app.run(debug=True, use_reloader=True, host='0.0.0.0', port=7860)
