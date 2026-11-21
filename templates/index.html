@@ -47,6 +47,13 @@
         /* =========================================
        1. GLOBAL SETTINGS & RESET
        ========================================= */
+        /* Fallback proteksi: Cegah layar kosong/blank jika CDN animasi lambat merespons */
+        html:not(.aos-init) [data-aos] {
+            opacity: 1 !important;
+            transform: none !important;
+            visibility: visible !important;
+        }
+
         :root {
             --primary-gold: #D4A373;
             --secondary-gold: #B88656;

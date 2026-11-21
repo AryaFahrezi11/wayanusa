@@ -38,12 +38,12 @@
                 <!-- Video Frame Avatar -->
                 <div class="avatar-card-container">
                     <div class="avatar-video-card">
-                        <!-- 1. Video Thinking: Default Loop saat diam/berpikir (SELALU AKTIF AWAL) -->
-                        <video id="videoThinking" class="avatar-video-element" autoplay loop muted playsinline preload="auto" style="display: block !important;">
+                        <!-- 1. Video Thinking: Default Loop saat diam/berpikir (Preload none agar hemat kuota & halaman cepat dibuka) -->
+                        <video id="videoThinking" class="avatar-video-element" loop muted playsinline preload="none" style="display: block !important;">
                             <source src="{{ url_for('static', filename='images/cepot_thinking.mp4') }}?v=2.2" type="video/mp4">
                         </video>
                         <!-- 2. Video Speak: HANYA aktif saat Cepot sedang menjawab pertanyaan -->
-                        <video id="videoSpeaking" class="avatar-video-element" loop muted playsinline preload="auto" style="display: none !important;">
+                        <video id="videoSpeaking" class="avatar-video-element" loop muted playsinline preload="none" style="display: none !important;">
                             <source src="{{ url_for('static', filename='images/cepot_speak.mp4') }}?v=2.2" type="video/mp4">
                         </video>
                     </div>
