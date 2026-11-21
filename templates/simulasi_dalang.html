@@ -421,36 +421,11 @@
 <body>
     {% include 'layouts/navbar.html' %}
 
-    <!-- TOMBOL CEPAT MODE LANSKAP / LAYAR PENUH -->
-    <button class="btn-landscape-mode" id="btnLandscape" onclick="toggleLandscapeMode()" title="Mode Panggung Lanskap Penuh">
-        <i class="fas fa-expand"></i> <span class="landscape-btn-text">Lanskap</span>
-    </button>
-
-    <!-- NOTIFIKASI PUTAR KE LANSKAP (MUNCUL OTOMATIS SAAT HP DALAM POSISI TEGAK) -->
-    <div id="rotateNotice" class="rotate-notice-overlay">
-        <div class="rotate-notice-card">
-            <div class="rotate-anim-box">
-                <i class="fas fa-mobile-alt phone-icon"></i>
-                <i class="fas fa-sync-alt arrow-icon"></i>
-            </div>
-            <h4>Mode Panggung Wayang</h4>
-            <p>Untuk panggung yang luas dan leluasa dimainkan, silakan putar smartphone Anda ke posisi <strong>Lanskap (Horizontal)</strong>.</p>
-            <div class="rotate-actions">
-                <button class="btn-rotate-now" onclick="toggleLandscapeMode()">
-                    <i class="fas fa-expand-arrows-alt"></i> Buka Layar Penuh (Lanskap)
-                </button>
-                <button class="btn-rotate-skip" onclick="dismissRotateNotice()">
-                    Tetap di Mode Potret
-                </button>
-            </div>
-        </div>
-    </div>
-
     <div class="panggung"></div>
 
     <div class="stage-area" id="stageArea">
         <div class="tirai-area"></div>
-        <div class="trash-bin" id="trashBin" title="Tarik wayang ke sini untuk menghapus"><i class="fas fa-trash-alt"></i></div>
+        <div class="trash-bin" id="trashBin"><i class="fas fa-trash-alt"></i></div>
     </div>
 
     <div class="wayang-list" id="wayangList">
@@ -506,6 +481,7 @@
             // Toggle Laci
             btnAdd.onclick = () => {
                 wayangList.classList.toggle("show");
+                // Ganti icon saat buka/tutup
                 if(wayangList.classList.contains("show")) {
                     btnAdd.innerHTML = '<i class="fas fa-times"></i>';
                 } else {
@@ -513,29 +489,48 @@
                 }
             };
 
-            // Fungsi Membuat Wayang ke Panggung
-            function spawnWayang(dataBadan, dataTka, dataTkb, dataTla, dataTlb, x, y) {
+            // Setup Dragging Slot
+            document.querySelectorAll(".wayang-slot").forEach(slot => {
+                // 1. Saat mulai ditarik, biarkan laci tetap terbuka
+                slot.addEventListener("dragstart", (e) => { 
+                    draggedSlot = slot; 
+                });
+
+                // 2. Saat tarikan selesai (wayang dilepas ke panggung), baru lacinya ditutup
+                slot.addEventListener("dragend", () => {
+                    wayangList.classList.remove("show");
+                    btnAdd.innerHTML = '<i class="fas fa-box-open"></i>';
+                });
+            });
+
+            stage.addEventListener("dragover", e => e.preventDefault());
+
+            stage.addEventListener("drop", e => {
+                e.preventDefault();
+                if (!draggedSlot) return;
+                const rect = stage.getBoundingClientRect();
+
                 const wayang = document.createElement("div");
                 wayang.className = "wayang";
-                wayang.style.left = x + "px";
-                wayang.style.top = y + "px";
+                wayang.style.left = (e.clientX - rect.left - 45) + "px";
+                wayang.style.top = (e.clientY - rect.top - 70) + "px";
                 wayang.flipped = false;
 
                 wayang.innerHTML = `
-                <img class="badan" src="${dataBadan}">
+                <img class="badan" src="${draggedSlot.dataset.badan}">
                 <div class="tangan kanan">
                     <div class="lengan-atas">
-                        <img src="${dataTka}">
+                        <img src="${draggedSlot.dataset.tka}">
                         <div class="lengan-bawah">
-                            <img src="${dataTkb}">
+                            <img src="${draggedSlot.dataset.tkb}">
                         </div>
                     </div>
                 </div>
                 <div class="tangan kiri">
                     <div class="lengan-atas">
-                        <img src="${dataTla}">
+                        <img src="${draggedSlot.dataset.tla}">
                         <div class="lengan-bawah">
-                            <img src="${dataTlb}">
+                            <img src="${draggedSlot.dataset.tlb}">
                         </div>
                     </div>
                 </div>
@@ -546,6 +541,8 @@
                 aktifkanRotasiTangan(wayang);
                 fallDown(wayang);
                 enableDoubleClickFlip(wayang);
+
+                draggedSlot = null;
 
                 // Pose Awal
                 const tKA = wayang.querySelector('.tangan.kanan .lengan-atas');
@@ -559,77 +556,36 @@
                 if(tLB) tLB.style.transform = 'rotate(35deg)';
             });
 
-            stage.addEventListener("dragover", e => e.preventDefault());
-
-            stage.addEventListener("drop", e => {
-                e.preventDefault();
-                if (!draggedSlot) return;
-                const rect = stage.getBoundingClientRect();
-                const spawnX = e.clientX - rect.left - 45;
-                const spawnY = e.clientY - rect.top - 70;
-                spawnWayang(
-                    draggedSlot.dataset.badan,
-                    draggedSlot.dataset.tka,
-                    draggedSlot.dataset.tkb,
-                    draggedSlot.dataset.tla,
-                    draggedSlot.dataset.tlb,
-                    spawnX,
-                    spawnY
-                );
-                draggedSlot = null;
-            });
-
-            // LOGIKA DRAG & DROP DALAM PANGGUNG (Mendukung Mouse & Touch Layar HP)
+            // LOGIKA DRAG & DROP DALAM PANGGUNG (Tidak diubah, murni buatan Mas)
             function enableStageDrag(el) {
                 let isDrag = false, offsetX = 0, offsetY = 0;
-
-                function startDrag(clientX, clientY) {
+                el.addEventListener("mousedown", e => {
                     isDrag = true;
-                    const r = el.getBoundingClientRect();
-                    offsetX = clientX - r.left;
-                    offsetY = clientY - r.top;
+                    offsetX = e.offsetX;
+                    offsetY = e.offsetY;
                     el.falling = false;
-                }
-
-                function moveDrag(clientX, clientY) {
+                    document.addEventListener("mousemove", move);
+                    document.addEventListener("mouseup", up);
+                });
+                function move(e) {
                     if (!isDrag) return;
                     const r = stage.getBoundingClientRect();
-                    let x = clientX - r.left - offsetX;
-                    let y = clientY - r.top - offsetY;
+                    let x = e.clientX - r.left - offsetX;
+                    let y = e.clientY - r.top - offsetY;
                     x = Math.max(0, Math.min(r.width - el.clientWidth, x));
                     y = Math.max(0, Math.min(r.height - el.clientHeight, y));
                     el.style.left = x + "px";
                     el.style.top = y + "px";
                     trash.classList.toggle("active", isOverTrash(el));
                 }
-
-                function stopDrag() {
-                    if (!isDrag) return;
+                function up() {
                     isDrag = false;
                     if (isOverTrash(el)) el.remove();
                     else fallDown(el);
                     trash.classList.remove("active");
+                    document.removeEventListener("mousemove", move);
+                    document.removeEventListener("mouseup", up);
                 }
-
-                // Event Mouse
-                el.addEventListener("mousedown", e => { startDrag(e.clientX, e.clientY); });
-                document.addEventListener("mousemove", e => { if(isDrag) moveDrag(e.clientX, e.clientY); });
-                document.addEventListener("mouseup", stopDrag);
-
-                // Event Touch Layar Sentuh HP
-                el.addEventListener("touchstart", e => {
-                    if (e.touches.length === 1) {
-                        startDrag(e.touches[0].clientX, e.touches[0].clientY);
-                    }
-                }, { passive: true });
-
-                document.addEventListener("touchmove", e => {
-                    if (isDrag && e.touches.length === 1) {
-                        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-                    }
-                }, { passive: true });
-
-                document.addEventListener("touchend", stopDrag);
             }
 
             // =========================================
@@ -708,6 +664,7 @@
 
             function isOverTrash(el){
                 const w=el.getBoundingClientRect(), t=trash.getBoundingClientRect();
+                // Memberi sedikit margin agar lebih pas
                 return !(w.right < t.left - 20 || w.left > t.right + 20 || w.bottom < t.top - 20 || w.top > t.bottom + 20);
             }
 
@@ -724,16 +681,10 @@
             }
 
             function enableDoubleClickFlip(wayang){
-                // Double Click / Double Tap untuk membalik hadap wayang
-                let lastTap = 0;
-                wayang.addEventListener('click', (e) => {
-                    const now = Date.now();
-                    if (now - lastTap < 300) {
-                        wayang.flipped = !wayang.flipped;
-                        if(wayang.flipped) wayang.style.transform += ' scaleX(-1)';
-                        else wayang.style.transform = wayang.style.transform.replace(' scaleX(-1)','');
-                    }
-                    lastTap = now;
+                wayang.addEventListener('dblclick', ()=>{
+                    wayang.flipped = !wayang.flipped;
+                    if(wayang.flipped) wayang.style.transform += ' scaleX(-1)';
+                    else wayang.style.transform = wayang.style.transform.replace(' scaleX(-1)','');
                 });
             }
 
@@ -984,52 +935,6 @@
                 });
             }
         });
-
-        // --- FITUR AUTO LANDSCAPE & FULLSCREEN ---
-        let rotateDismissed = false;
-
-        function checkOrientation() {
-            const isPortraitMobile = window.matchMedia("(max-width: 900px) and (orientation: portrait)").matches;
-            const notice = document.getElementById("rotateNotice");
-            if (notice) {
-                if (isPortraitMobile && !rotateDismissed) {
-                    notice.classList.add("active");
-                } else {
-                    notice.classList.remove("active");
-                }
-            }
-        }
-
-        function dismissRotateNotice() {
-            rotateDismissed = true;
-            const notice = document.getElementById("rotateNotice");
-            if (notice) notice.classList.remove("active");
-        }
-
-        async function toggleLandscapeMode() {
-            try {
-                // 1. Masuk Fullscreen
-                if (!document.fullscreenElement) {
-                    if (document.documentElement.requestFullscreen) {
-                        await document.documentElement.requestFullscreen();
-                    } else if (document.documentElement.webkitRequestFullscreen) {
-                        await document.documentElement.webkitRequestFullscreen();
-                    }
-                }
-                // 2. Kunci orientasi ke Landscape (didukung oleh Android Chrome/Edge/Firefox)
-                if (screen.orientation && screen.orientation.lock) {
-                    await screen.orientation.lock('landscape').catch(() => {});
-                }
-                dismissRotateNotice();
-            } catch (e) {
-                console.log("Fullscreen/Lock error:", e);
-                dismissRotateNotice();
-            }
-        }
-
-        window.addEventListener("resize", checkOrientation);
-        window.addEventListener("orientationchange", checkOrientation);
-        setTimeout(checkOrientation, 350);
     </script>
 </body>
 </html>

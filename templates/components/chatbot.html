@@ -4,7 +4,7 @@
     <!-- FLOATING LAUNCHER PILL (POJOK KANAN BAWAH) -->
     <div class="cepot-launcher-pill" id="chatbotButton" title="Buka Asisten Cepot AI">
         <div class="launcher-avatar-box">
-            <img src="{{ url_for('static', filename='images/cepot_avatar.png') }}" alt="Cepot AI" class="launcher-avatar-img">
+            <img src="{{ url_for('static', filename='images/cepot_head.png') }}?v=3.0" alt="Cepot AI" class="launcher-avatar-img">
             <span class="launcher-online-dot"></span>
         </div>
         <div class="launcher-text-box">
@@ -83,7 +83,7 @@
                     <!-- Pesan Awal Sambutan Cepot -->
                     <div class="message-row bot-row">
                         <div class="bot-msg-avatar">
-                            <img src="{{ url_for('static', filename='images/cepot_avatar.png') }}" alt="Cepot">
+                            <img src="{{ url_for('static', filename='images/cepot_head.png') }}?v=3.0" alt="Cepot">
                         </div>
                         <div class="message-bubble bot-bubble">
                             <p class="bot-msg-text">
@@ -166,30 +166,70 @@
 
     .launcher-avatar-box {
         position: relative;
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
         flex-shrink: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 35%, #2d2e3b 0%, #101116 100%);
+        border: 2px solid rgba(255, 255, 255, 0.92);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 12px rgba(16, 185, 129, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .launcher-avatar-img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #D4A373;
-        background: #111;
+        width: 92%;
+        height: 92%;
+        border-radius: 0;
+        object-fit: contain;
+        transform-origin: 50% 90%;
+        animation: cepotHeadMotion 3.4s ease-in-out infinite;
+        filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.6));
+    }
+
+    .cepot-launcher-pill:hover .launcher-avatar-img {
+        animation: cepotHeadExcited 0.7s ease-in-out infinite alternate;
+    }
+
+    @keyframes cepotHeadMotion {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg) scale(1);
+        }
+        20% {
+            transform: translateY(-2.5px) rotate(4deg) scale(1.03);
+        }
+        45% {
+            transform: translateY(0.5px) rotate(-3deg) scale(1.01);
+        }
+        65% {
+            transform: translateY(-3px) rotate(2.5deg) scale(1.04);
+        }
+        85% {
+            transform: translateY(1px) rotate(-1deg) scale(1.01);
+        }
+    }
+
+    @keyframes cepotHeadExcited {
+        0% {
+            transform: translateY(0) rotate(-4.5deg) scale(1.05);
+        }
+        100% {
+            transform: translateY(-4px) rotate(4.5deg) scale(1.12);
+        }
     }
 
     .launcher-online-dot {
         position: absolute;
-        bottom: 1px;
-        right: 1px;
-        width: 11px;
-        height: 11px;
+        bottom: 0px;
+        right: 0px;
+        width: 12px;
+        height: 12px;
         background: #10b981;
         border: 2px solid #141418;
         border-radius: 50%;
         box-shadow: 0 0 8px #10b981;
+        animation: dotGlow 2s infinite;
     }
 
     .launcher-text-box {
@@ -631,12 +671,15 @@
     }
 
     .bot-msg-avatar img {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
-        border: 1.5px solid #D4A373;
-        background: #111;
+        border: 1.5px solid rgba(255, 255, 255, 0.85);
+        background: radial-gradient(circle at 50% 35%, #2d2e3b 0%, #101116 100%);
+        object-fit: contain;
         flex-shrink: 0;
+        transform-origin: 50% 90%;
+        animation: cepotHeadMotion 3.4s ease-in-out infinite;
     }
 
     .message-bubble {

@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
         div.className = 'message-row bot-row';
         div.innerHTML = `
             <div class="bot-msg-avatar">
-                <img src="/static/images/cepot_avatar.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'">
+                <img src="/static/images/cepot_head.png?v=3.0" onerror="this.src='/static/images/cepot_avatar.png'">
             </div>
             <div class="message-bubble bot-bubble">
                 <p class="bot-msg-text">${htmlContent}</p>
