@@ -203,6 +203,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Submit score to API
     async function submitScore() {
         try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playerName = urlParams.get('player_name') || sessionStorage.getItem('wayanusa_player_name') || '';
+
             const response = await fetch('/api/quiz/submit', {
                 method: 'POST',
                 headers: {
@@ -211,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({
                     level_id: levelId,
                     user_id: userId,
+                    player_name: playerName,
                     score: score,
                     total_questions: quizData.length,
                     user_answers: userAnswers.map(ans => ({

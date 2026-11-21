@@ -30,9 +30,7 @@ def admin_login_required(f):
 def user_login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if 'user_logged_in' not in session:
-            flash('Silakan login terlebih dahulu!', 'warning')
-            return redirect(url_for('web.login_user'))
+        # Bebas akses semua fitur tanpa harus login
         return f(*args, **kwargs)
     return wrapper
 
@@ -146,16 +144,12 @@ def logout_user():
 
 @web_routes.route('/pengenalan-wayang')
 def pengenalan_wayang():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     return render_template('pengenalan_wayang.html')
 
 _CACHED_VIDEOS = None
 
 @web_routes.route('/pertunjukan-wayang')
 def pertunjukan_wayang():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     global _CACHED_VIDEOS
     if not _CACHED_VIDEOS:
         try:
@@ -175,11 +169,7 @@ def pertunjukan_wayang():
 _CACHED_QUIZ_LEVELS = None
 
 @web_routes.route('/quiz')
-@user_login_required
 def quiz():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
-    
     global _CACHED_QUIZ_LEVELS
     if not _CACHED_QUIZ_LEVELS:
         try:
@@ -200,11 +190,12 @@ def quiz():
     return render_template('quiz.html', levels=_CACHED_QUIZ_LEVELS)
 
 @web_routes.route('/quiz/play')
-@user_login_required
 def quiz_play():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     level_id = request.args.get('level', type=int)
+    player_name = request.args.get('player_name', '').strip()
+    if player_name:
+        session['player_name'] = player_name
+
     if not level_id:
         flash('Level quiz tidak valid!', 'error')
         return redirect(url_for('web.quiz'))
@@ -229,9 +220,6 @@ _CACHED_DALANGS = None
 
 @web_routes.route('/mencari-dalang')
 def mencari_dalang():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
-    
     global _CACHED_DALANGS
     if not _CACHED_DALANGS:
         try:
@@ -248,9 +236,6 @@ def mencari_dalang():
 
 @web_routes.route('/dalang/<int:dalang_id>')
 def dalang_detail(dalang_id):
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
-    
     global _CACHED_DALANGS
     dalang = None
     if _CACHED_DALANGS:
@@ -265,17 +250,12 @@ def dalang_detail(dalang_id):
 
 @web_routes.route("/pertunjukan_wayang/video/<int:id>")
 def video_detail(id):
-    if not session.get("user_logged_in"):
-        return redirect(url_for("web.login_user"))
-
     video = Video.query.get_or_404(id)
     related_videos = Video.query.filter(Video.id != id).all()
     return render_template("video_detail.html", video=video, related_videos=related_videos)
 
 @web_routes.route('/search')
 def search_video():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     q = request.args.get("q", "")
 
     # HINDARI: q kosong tapi masih tampil ""
@@ -292,8 +272,6 @@ _CACHED_ARTIKELS = None
 
 @web_routes.route('/artikel')
 def artikel():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     global _CACHED_ARTIKELS
     if not _CACHED_ARTIKELS:
         try:
@@ -309,25 +287,17 @@ def artikel():
 
 @web_routes.route('/artikel/<int:id>')
 def artikel_detail(id):
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     artikel = Article.query.get_or_404(id)
     return render_template('artikel_detail.html', artikel=artikel)
 
 @web_routes.route('/s-dalang')
 def simulasi_dalang():
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
     wayangs = WayangGame.query.order_by(WayangGame.id.asc()).all()
     print("Jumlah wayang:", len(wayangs))  # Debug: cek di console server
     return render_template("simulasi_dalang.html", wayangs=wayangs)
 
 @web_routes.route('/smart-wayang')
 def smart_wayang():
-    # Pastikan user login jika fitur ini butuh akses khusus (opsional)
-    if not session.get('user_logged_in'):
-        return redirect(url_for('web.login_user'))
-        
     return render_template('smart_wayang.html')
 
 # =========================
@@ -1171,6 +1141,7 @@ def ulasan():
     if request.method == 'POST':
         rating = request.form.get('rating')
         komentar = request.form.get('komentar')
+        nama_input = request.form.get('nama_user', '').strip()
 
         if not rating or not komentar:
             flash('Rating dan komentar wajib diisi', 'danger')
@@ -1180,6 +1151,9 @@ def ulasan():
         if rating < 1 or rating > 5:
             flash('Rating harus antara 1 sampai 5', 'danger')
             return redirect(url_for('web.ulasan'))
+
+        # Tentukan nama user (dari form, session, atau default)
+        nama_user = nama_input or session.get('user_name') or 'Sobat Wayanusa'
 
         # ========================
         # AI SENTIMENT ANALYSIS
@@ -1192,7 +1166,7 @@ def ulasan():
 
         ulasan = UlasanAplikasi(
             user_id=session.get('user_id'),
-            nama_user=session.get('user_name', 'Guest'),
+            nama_user=nama_user,
             email_user=session.get('user_email'),
             rating=rating,
             kategori=kategori,   # 🔥 DARI AI

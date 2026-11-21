@@ -77,16 +77,198 @@
         </div>
     </section>
 
+    <!-- NICKNAME MODAL (KAHOOT STYLE) -->
+    <div id="nicknameModal" class="modal-nickname-overlay" style="display: none;">
+        <div class="modal-nickname-card">
+            <div class="modal-nickname-icon">🎭</div>
+            <h3 class="modal-nickname-title">Siap Bertanding?</h3>
+            <p class="modal-nickname-sub">Tuliskan nama atau panggilanmu agar nilaimu tercatat di <strong>Papan Peringkat (Leaderboard)</strong>!</p>
+            
+            <form id="nicknameForm" onsubmit="confirmStartQuiz(event)">
+                <input type="text" id="playerNickname" class="nickname-input" placeholder="Ketik nama kamu (contoh: Raden Bima)" maxlength="25" autocomplete="off" required>
+                <div class="modal-nickname-actions">
+                    <button type="submit" class="btn-nickname-start">Mulai Kuis 🚀</button>
+                    <button type="button" class="btn-nickname-skip" onclick="skipNickname()">Main sebagai Tamu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .modal-nickname-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeInModal 0.25s ease;
+        }
+
+        .modal-nickname-card {
+            background: #14151b;
+            border: 1.5px solid rgba(212, 163, 115, 0.45);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 163, 115, 0.2);
+            animation: popInModal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
+        }
+
+        .modal-nickname-icon {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+        }
+
+        .modal-nickname-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-nickname-sub {
+            color: #b0b3c1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-nickname-sub strong {
+            color: #D4A373;
+        }
+
+        .nickname-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(212, 163, 115, 0.35);
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 1.05rem;
+            text-align: center;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+            font-weight: 600;
+        }
+
+        .nickname-input:focus {
+            border-color: #D4A373;
+            box-shadow: 0 0 15px rgba(212, 163, 115, 0.3);
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        .modal-nickname-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-nickname-start {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #d4a373 0%, #b88656 100%);
+            border: none;
+            border-radius: 14px;
+            color: #111;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 20px rgba(212, 163, 115, 0.35);
+        }
+
+        .btn-nickname-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 163, 115, 0.5);
+        }
+
+        .btn-nickname-skip {
+            background: transparent;
+            border: none;
+            color: #8c90a4;
+            font-size: 0.88rem;
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.2s;
+        }
+
+        .btn-nickname-skip:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popInModal {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+    </style>
+
     <script>
+        const isUserLoggedIn = {{ session.get('user_logged_in', False)|tojson }};
+        const currentUserName = {{ session.get('user_name', '')|tojson }};
+        let pendingLevelId = null;
+
         function startQuiz(levelId) {
-            const loggedIn = {{ session.get('user_logged_in', False) | tojson }};
-            if (!loggedIn) {
-                alert('Silakan login terlebih dahulu untuk menggunakan fitur quiz.');
-                window.location.href = '{{ url_for("web.login_user") }}';
+            pendingLevelId = levelId;
+            // Jika user sudah login atau sudah pernah ketik nama di session/storage
+            const savedName = currentUserName || sessionStorage.getItem('wayanusa_player_name');
+            if (isUserLoggedIn && savedName) {
+                goToPlay(levelId, savedName);
                 return;
             }
-            window.location.href = '{{ url_for("web.quiz_play") }}?level=' + levelId;
+
+            // Jika belum ada nama, buka modal nickname (Kahoot style)
+            const modal = document.getElementById('nicknameModal');
+            const input = document.getElementById('playerNickname');
+            if (savedName) input.value = savedName;
+            modal.style.display = 'flex';
+            setTimeout(() => input.focus(), 150);
         }
+
+        function confirmStartQuiz(e) {
+            e.preventDefault();
+            const input = document.getElementById('playerNickname');
+            const nickname = input.value.trim() || 'Sobat Wayang';
+            sessionStorage.setItem('wayanusa_player_name', nickname);
+            goToPlay(pendingLevelId, nickname);
+        }
+
+        function skipNickname() {
+            const nickname = 'Sobat Wayang';
+            sessionStorage.setItem('wayanusa_player_name', nickname);
+            goToPlay(pendingLevelId, nickname);
+        }
+
+        function goToPlay(levelId, nickname) {
+            window.location.href = '{{ url_for("web.quiz_play") }}?level=' + levelId + '&player_name=' + encodeURIComponent(nickname);
+        }
+
+        // Tutup modal jika klik di luar
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('nicknameModal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
     </script>
     {% include 'components/chatbot.html' %}
 

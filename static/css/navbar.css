@@ -1,32 +1,66 @@
-/* =========================
-   1. NAVBAR CONTAINER & CORE
-========================= */
-.navbar {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    max-width: 1200px;
-    background: rgba(20, 20, 20, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(212, 163, 115, 0.3);
-    border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    padding: 0 20px;
-    transition: all 0.3s ease;
-    height: 70px;
-    display: flex;
-    align-items: center;
+/* ========================================================
+   WAYANUSA MODERN NAVBAR STYLES
+   ======================================================== */
+
+:root {
+    --navbar-height: 60px;
+    --navbar-top-offset: 18px;
+    --navbar-safe-gap: 40px;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+/* Jarak aman global agar main content tidak bertabrakan dengan navbar */
+main, 
+.hero,
+.quiz-section, 
+.detail, 
+.ulasan-page,
+.main-content,
+.pengenalan-container,
+.smart-wayang-container {
+    padding-top: 115px !important;
+}
+
+@media (max-width: 768px) {
+    main, 
+    .hero,
+    .quiz-section, 
+    .detail, 
+    .ulasan-page,
+    .main-content,
+    .pengenalan-container,
+    .smart-wayang-container {
+        padding-top: 98px !important;
+    }
+}
+
+/* Core Navbar Pill */
+.navbar {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92%;
+    max-width: 1180px;
+    height: 60px;
+    background: rgba(14, 15, 20, 0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.2px solid rgba(212, 163, 115, 0.28);
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 20px rgba(212, 163, 115, 0.08);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    padding: 0 22px;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar-container {
     width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 .navbar-content {
@@ -36,238 +70,148 @@
     width: 100%;
 }
 
-/* =========================
-   2. LOGO (KIRI)
-========================= */
 .navbar-logo {
-    flex: 0 0 auto;
     display: flex;
     align-items: center;
-    z-index: 1002; /* Agar logo tetap bisa diklik saat menu terbuka */
+    flex-shrink: 0;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 }
 
 .logo-image {
-    height: 45px;
+    height: 32px;
     width: auto;
-    max-width: 150px;
     object-fit: contain;
+    transition: transform 0.25s ease;
 }
 
-/* =========================
-   3. MENU LINKS (TENGAH - DESKTOP)
-========================= */
-.navbar-menu {
-    flex: 1;
-    display: flex;
-    justify-content: center;
+.logo-link:hover .logo-image {
+    transform: scale(1.04);
+}
+
+.desktop-menu {
+    display: none;
 }
 
 .nav-links {
     display: flex;
+    align-items: center;
     list-style: none;
-    gap: 20px;
+    gap: 6px;
     margin: 0;
     padding: 0;
 }
 
 .nav-links li a {
-    color: #fff;
+    color: #d1d4dc;
     text-decoration: none;
+    font-size: 0.88rem;
     font-weight: 500;
-    font-size: 0.95rem;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
-    position: relative;
-}
-
-/* Hover Effect Emas */
-.nav-links li a:hover, 
-.nav-links li a.active {
-    color: #D4A373;
-    background: rgba(212, 175, 55, 0.1);
-}
-
-/* =========================
-   4. ACTIONS (KANAN)
-========================= */
-.navbar-right-side {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* User Greeting Style */
-.user-greeting {
-    background: rgba(255, 215, 0, 0.1);
-    color: #ffd700;
-    font-weight: 600;
-    font-size: 0.85rem;
-    padding: 8px 15px;
+    padding: 7px 12px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: all 0.22s ease;
+    letter-spacing: 0.2px;
     white-space: nowrap;
 }
 
-/* Login Button Style (Gradient Emas) */
-.btn-login, .btn-mobile-auth {
-    background: linear-gradient(135deg, #ffd700, #ffb347);
-    color: #000;
-    padding: 8px 25px;
-    border-radius: 25px;
+.nav-links li a:hover {
+    color: #ffffff;
+    background: rgba(212, 163, 115, 0.16);
+}
+
+.nav-links li a.active {
+    color: #D4A373;
+    background: rgba(212, 163, 115, 0.14);
+    font-weight: 600;
+}
+
+.navbar-right-side {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.auth-desktop {
+    display: none;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-greeting {
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(212, 163, 115, 0.15);
+    border: 1px solid rgba(212, 163, 115, 0.3);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.btn-logout-icon {
+    color: #ef4444;
+    font-size: 1rem;
+    transition: transform 0.2s, color 0.2s;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-    border: none;
-    display: inline-block;
+    display: flex;
+    align-items: center;
 }
 
-.btn-login:hover, .btn-mobile-auth:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
-    background: #fff;
+.btn-logout-icon:hover {
+    transform: scale(1.15);
+    color: #dc2626;
 }
 
-.btn-logout {
-    color: #ccc;
-    font-size: 1.2rem;
-    transition: 0.3s;
-}
-.btn-logout:hover { color: #dc3545; }
-
-
-/* =========================
-   5. BURGER MENU (HIDDEN ON DESKTOP)
-========================= */
-.burger-menu {
-    display: none; /* Default hidden */
+/* Burger Button */
+.burger-menu-modern {
+    display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 22px;
-    background: none;
-    border: none;
+    justify-content: center;
+    gap: 5px;
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 163, 115, 0.2);
+    border-radius: 10px;
     cursor: pointer;
-    z-index: 1002;
-    padding: 0;
+    padding: 8px;
+    box-sizing: border-box;
+    transition: all 0.25s ease;
 }
 
-.burger-line {
+.burger-menu-modern:hover {
+    background: rgba(212, 163, 115, 0.12);
+    border-color: #D4A373;
+}
+
+.bar {
     width: 100%;
-    height: 3px;
-    background-color: #D4A373; /* Warna Emas */
-    border-radius: 10px;
+    height: 2px;
+    background-color: #D4A373;
+    border-radius: 2px;
     transition: all 0.3s ease;
 }
 
-/* Helper Classes */
-.mobile-only-action { display: none; } /* Login di menu mobile hidden di desktop */
-.desktop-only-action { display: flex; } /* Login di header visible di desktop */
+.burger-menu-modern.active .bar1 {
+    transform: rotate(45deg) translate(3px, 4px);
+    background-color: #ffffff;
+}
 
-/* ================= RESPONSIVE (MOBILE) ================= */
-@media (max-width: 992px) {
-    
-    /* 1. Tampilkan Burger, Sembunyikan Auth Desktop */
-    .burger-menu { 
-        display: flex; 
-        z-index: 10002; /* Burger harus paling atas */
-    }
-    .desktop-only-action { display: none; }
+.burger-menu-modern.active .bar2 {
+    opacity: 0;
+}
 
-    /* 2. MENU DROPDOWN MOBILE (PERBAIKAN UTAMA) */
-    .navbar-menu {
-        position: fixed;        /* Pakai fixed agar tidak terpengaruh scroll parent */
-        top: 0;                 /* Mulai dari paling atas layar */
-        left: 0;
-        width: 100%;
-        height: 100vh;          /* Full layar */
-        background: rgba(0, 0, 0, 0.95); /* Hitam Pekat Transparan */
-        backdrop-filter: blur(15px);
-        
-        /* Flex untuk menengahkan isi menu */
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding-top: 60px;      /* Jarak biar gak nabrak tombol close */
-        
-        /* Animasi Sembunyi */
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-20px);
-        transition: all 0.4s ease;
-        
-        display: flex !important; /* Paksa display flex */
-        z-index: 10001; /* Pastikan DI ATAS Hero Section (Hero biasanya z-index 1-10) */
-    }
+.burger-menu-modern.active .bar3 {
+    transform: rotate(-45deg) translate(3px, -4px);
+    background-color: #ffffff;
+}
 
-    /* 3. SAAT MENU AKTIF (DIBUKA) */
-    .navbar-menu.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-
-    /* 4. Style Link di Mobile */
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-        gap: 25px; /* Jarak antar menu lebih lega */
-        text-align: center;
-    }
-
-    .nav-links li {
-        width: 100%;
-        border: none; /* Hapus garis pemisah biar bersih */
-    }
-
-    .nav-links li a {
-        display: inline-block;
-        font-size: 1.5rem; /* Font lebih besar di HP */
-        font-weight: 700;
-        color: #fff;
-        font-family: 'Playfair Display', serif; /* Font judul biar elegan */
-    }
-    
-    .nav-links li a:hover {
-        color: #D4A373;
-        background: none;
-        transform: scale(1.1); /* Efek zoom dikit */
-    }
-
-    /* 5. Tombol Login di Mobile */
-    .mobile-only-action {
-        display: block;
-        margin-top: 30px;
-    }
-    
-    .btn-mobile-auth {
-        background: #D4A373;
-        color: #000;
-        padding: 12px 50px;
-        font-size: 1.1rem;
-        border-radius: 50px;
-        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
-    }
-
-    /* 6. Animasi Burger jadi X */
-    .burger-menu.active .burger-line:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 6px);
-        background-color: #dc3545; /* Warna merah saat close */
-    }
-    .burger-menu.active .burger-line:nth-child(2) {
-        opacity: 0;
-    }
-    .burger-menu.active .burger-line:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -6px);
-        background-color: #dc3545;
-    }
+@media (min-width: 992px) {
+    .desktop-menu { display: block; }
+    .auth-desktop { display: flex; }
+    .burger-menu-modern { display: none; }
 }

@@ -104,10 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============================================================
     if (chatbotButton) {
         chatbotButton.addEventListener('click', () => {
-            if (!isLoggedIn) {
-                window.location.href = loginUrl;
-                return;
-            }
             chatPopup.classList.add('active');
             if (launcherBadge) launcherBadge.style.display = 'none';
 

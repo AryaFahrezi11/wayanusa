@@ -82,12 +82,36 @@ def submit_score():
     user_answers = data.get("user_answers", [])
 
     # Validasi
-    if not user_id or not level_id or score is None or total_questions is None:
-        return jsonify({"error": "user_id, level_id, score, total_questions required"}), 400
+    if not level_id or score is None or total_questions is None:
+        return jsonify({"error": "level_id, score, total_questions required"}), 400
 
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User tidak ditemukan"}), 404
+    player_name = (data.get("player_name", "").strip() or session.get("player_name", "")).strip() or "Sobat Wayang"
+
+    # Jika belum login, gunakan atau buatkan user guest otomatis agar masuk Leaderboard
+    if not user_id:
+        clean_name = player_name[:50]
+        guest_email = f"guest_{clean_name.lower().replace(' ', '_')}@tamu.wayanusa"
+        user = User.query.filter((User.email == guest_email) | (User.name == clean_name)).first()
+        if not user:
+            user = User(
+                name=clean_name,
+                email=guest_email,
+                password_hash="-"
+            )
+            db.session.add(user)
+            db.session.flush()
+        user_id = user.id
+        session["user_id"] = user_id
+        session["user_name"] = user.name
+    else:
+        user = User.query.get(user_id)
+        if not user:
+            clean_name = player_name[:50]
+            guest_email = f"guest_{clean_name.lower().replace(' ', '_')}@tamu.wayanusa"
+            user = User(name=clean_name, email=guest_email, password_hash="-")
+            db.session.add(user)
+            db.session.flush()
+            user_id = user.id
 
     # Simpan QuizResult
     quiz_result = QuizResult(
