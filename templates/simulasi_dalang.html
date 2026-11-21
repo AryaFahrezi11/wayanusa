@@ -13,6 +13,10 @@
           as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
+    <!-- Google MediaPipe Pose & Camera Utils -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    
     <style>
         /* =========================================
            1. LAYOUT DASAR
@@ -68,27 +72,24 @@
            3. UI CONTROLS (TOMBOL & TONG SAMPAH)
            ========================================= */
         .btn-add {
-            position: absolute;
-            bottom: 30px;
-            right: 40px;
-            width: 60px;
-            height: 60px;
+            width: 58px;
+            height: 58px;
             background: linear-gradient(135deg, #D4A373, #B88656);
             border: none;
             border-radius: 50%;
             cursor: pointer;
             color: #111;
             font-size: 24px;
-            z-index: 60;
             box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .btn-add:hover {
-            transform: translateY(-5px) scale(1.05);
+            transform: translateY(-3px) scale(1.05);
             box-shadow: 0 10px 25px rgba(212, 163, 115, 0.6);
             color: #fff;
         }
@@ -211,14 +212,26 @@
             height: 100%;
             object-fit: contain;
             pointer-events: none;
+            z-index: 2;
         }
 
         .wayang .tangan {
             position: absolute;
         }
 
-        .wayang .tangan.kanan { left: 170px; top: 97px; }
-        .wayang .tangan.kiri { left: 25px; top: 130px; }
+        /* --- TANGAN BELAKANG (KANAN) --- */
+        .wayang .tangan.kanan {
+            left: 170px;
+            top: 97px;
+            z-index: 3;
+        }
+
+        /* --- TANGAN DEPAN (KIRI) --- */
+        .wayang .tangan.kiri {
+            left: 25px;
+            top: 130px;
+            z-index: 4;
+        }
 
         .wayang .lengan-atas {
             position: relative;
@@ -228,7 +241,12 @@
             cursor: pointer;
         }
 
-        .wayang .lengan-atas img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+        .wayang .lengan-atas img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
 
         .wayang .lengan-bawah {
             position: absolute;
@@ -248,6 +266,154 @@
             height: 100%;
             object-fit: contain;
             pointer-events: none;
+        }
+
+        /* =========================================
+           6. KAMERA AI & MOTION TRACKING UI
+           ========================================= */
+        .btn-cam {
+            height: 58px;
+            padding: 0 22px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid #38bdf8;
+            border-radius: 29px;
+            cursor: pointer;
+            color: #38bdf8;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.35);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .btn-cam:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+            color: #fff;
+            border-color: #fff;
+        }
+
+        .btn-cam.active {
+            background: linear-gradient(135deg, #065f46, #047857);
+            border-color: #34d399;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(52, 211, 153, 0.9);
+            animation: pulse-cam 2s infinite;
+        }
+
+        @keyframes pulse-cam {
+            0% { box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(52, 211, 153, 0.85); }
+            100% { box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); }
+        }
+
+        /* Floating PIP Camera Window */
+        .cam-preview-box {
+            position: fixed;
+            bottom: 95px;
+            right: 35px;
+            width: 260px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid rgba(212, 163, 115, 0.5);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-bar-actions {
+            position: fixed;
+            bottom: 25px;
+            right: 35px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999;
+        }
+
+        .cam-preview-box.show {
+            display: flex;
+        }
+
+        .cam-header {
+            padding: 9px 14px;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #D4A373;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cam-header .cam-status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .cam-header .dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .cam-header .dot.active {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .btn-close-cam {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 2px 5px;
+            transition: color 0.2s;
+        }
+
+        .btn-close-cam:hover {
+            color: #ff5555;
+        }
+
+        .cam-video-wrap {
+            position: relative;
+            width: 100%;
+            height: 170px;
+            background: #000;
+        }
+
+        .cam-video-wrap video {
+            display: none;
+        }
+
+        .cam-video-wrap canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror display */
+        }
+
+        .cam-hint {
+            padding: 7px 10px;
+            font-size: 11px;
+            color: #d1d5db;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
@@ -276,7 +442,33 @@
         {% endfor %}
     </div>
 
-    <button class="btn-add" id="btnAdd"><i class="fas fa-box-open"></i></button>
+    <div class="bottom-bar-actions">
+        <button class="btn-cam" id="btnCam" title="Aktifkan Kamera AI Gerak Tangan">
+            <i class="fas fa-video"></i>
+            <span id="btnCamText">Kamera AI</span>
+        </button>
+        <button class="btn-add" id="btnAdd" title="Buka Laci Wayang">
+            <i class="fas fa-box-open"></i>
+        </button>
+    </div>
+
+    <!-- Floating PIP Camera Box -->
+    <div class="cam-preview-box" id="camPreviewBox">
+        <div class="cam-header">
+            <span class="cam-status">
+                <span class="dot" id="camDot"></span>
+                <span id="camStatusText">Kamera AI: Aktif</span>
+            </span>
+            <button class="btn-close-cam" id="btnCloseCam" title="Tutup Kamera">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cam-video-wrap">
+            <video id="webcamVideo" playsinline muted></video>
+            <canvas id="webcamCanvas" width="320" height="240"></canvas>
+        </div>
+        <div class="cam-hint" id="camHint">Gerakkan tangan Anda di depan webcam ✨</div>
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -358,10 +550,10 @@
                 const tLA = wayang.querySelector('.tangan.kiri .lengan-atas');
                 const tLB = wayang.querySelector('.tangan.kiri .lengan-bawah');
 
-                if(tKA) tKA.style.transform  = 'rotate(-35deg)';
-                if(tKB) tKB.style.transform = 'rotate(-55deg)';
-                if(tLA) tLA.style.transform  = 'rotate(25deg)';
-                if(tLB) tLB.style.transform  = 'rotate(35deg)';
+                if(tKA) tKA.style.transform = 'rotate(-20deg)';
+                if(tKB) tKB.style.transform = 'rotate(25deg)';
+                if(tLA) tLA.style.transform = 'rotate(25deg)';
+                if(tLB) tLB.style.transform = 'rotate(35deg)';
             });
 
             // LOGIKA DRAG & DROP DALAM PANGGUNG (Tidak diubah, murni buatan Mas)
@@ -396,25 +588,71 @@
                 }
             }
 
-            // LOGIKA ROTASI SENDI (Tidak diubah)
+            // =========================================
+            // LOGIKA ROTASI SENDI DENGAN BATAS ANATOMIS (PUPPET CLAMPING)
+            // Mencegah siku dan bahu berputar 360 derajat layaknya anatomi tangan manusia
+            // =========================================
             function aktifkanRotasiTangan(wayang) {
-                wayang.querySelectorAll('.lengan-atas').forEach(atas => {
-                    const bawah = atas.querySelector('.lengan-bawah');
-                    aktifkanSendi(atas, bawah);
+                wayang.querySelectorAll('.tangan').forEach(tangan => {
+                    const isKanan = tangan.classList.contains('kanan');
+                    const atas = tangan.querySelector('.lengan-atas');
+                    const bawah = tangan.querySelector('.lengan-bawah');
+                    if (atas && bawah) {
+                        aktifkanSendi(atas, bawah, isKanan);
+                    }
                 });
             }
 
-            function aktifkanSendi(atas, bawah) {
-                let startY=0, startAtas=0, startBawah=0, mode=null;
-                atas.addEventListener('mousedown', e=>{ e.stopPropagation(); mode='atas'; startY=e.clientY; startAtas=getRotation(atas); startBawah=getRotation(bawah); bind(); });
-                bawah.addEventListener('mousedown', e=>{ e.stopPropagation(); mode='bawah'; startY=e.clientY; startAtas=getRotation(atas); startBawah=getRotation(bawah); bind(); });
-                function bind(){ document.addEventListener('mousemove', move); document.addEventListener('mouseup', unbind); }
-                function move(e){
-                    const delta = startY - e.clientY;
-                    if(mode==='atas'){ atas.style.transform = `rotate(${startAtas + delta*0.6}deg)`; bawah.style.transform = `rotate(${startBawah + delta*0.85}deg)`; }
-                    if(mode==='bawah'){ bawah.style.transform = `rotate(${startBawah + delta}deg)`; atas.style.transform = `rotate(${startAtas + delta*0.4}deg)`; }
+            function aktifkanSendi(atas, bawah, isKanan) {
+                let startY = 0, startAtas = 0, startBawah = 0, mode = null;
+
+                atas.addEventListener('mousedown', e => {
+                    e.stopPropagation();
+                    mode = 'atas';
+                    startY = e.clientY;
+                    startAtas = getRotation(atas);
+                    startBawah = getRotation(bawah);
+                    bind();
+                });
+
+                bawah.addEventListener('mousedown', e => {
+                    e.stopPropagation();
+                    mode = 'bawah';
+                    startY = e.clientY;
+                    startAtas = getRotation(atas);
+                    startBawah = getRotation(bawah);
+                    bind();
+                });
+
+                function bind() {
+                    document.addEventListener('mousemove', move);
+                    document.addEventListener('mouseup', unbind);
                 }
-                function unbind(){ document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', unbind); }
+
+                function move(e) {
+                    const delta = startY - e.clientY; // Tarik mouse ke atas = nilai positif
+
+                    if (mode === 'atas') {
+                        // Bahu (Lengan Atas) - rentang ayunan wajar
+                        let newA = startAtas + delta * 0.7;
+                        newA = Math.max(-90, Math.min(140, newA));
+                        atas.style.transform = `rotate(${Math.round(newA)}deg)`;
+                    }
+
+                    if (mode === 'bawah') {
+                        // Siku (Lengan Bawah) - TERKUNCI ANATOMIS:
+                        // Baik tangan kiri maupun kanan, siku menekuk ke arah DEPAN (+135deg),
+                        // dan lurus di (-10deg). Siku TIDAK BISA ditekuk ke belakang (hiperekstensi).
+                        let newB = startBawah + delta * 0.8;
+                        newB = Math.max(-10, Math.min(135, newB));
+                        bawah.style.transform = `rotate(${Math.round(newB)}deg)`;
+                    }
+                }
+
+                function unbind() {
+                    document.removeEventListener('mousemove', move);
+                    document.removeEventListener('mouseup', unbind);
+                }
             }
 
             function getRotation(el){
@@ -447,6 +685,253 @@
                     wayang.flipped = !wayang.flipped;
                     if(wayang.flipped) wayang.style.transform += ' scaleX(-1)';
                     else wayang.style.transform = wayang.style.transform.replace(' scaleX(-1)','');
+                });
+            }
+
+            // =========================================
+            // 7. SISTEM AI MOTION TRACKING (MEDIAPIPE)
+            // =========================================
+            const btnCam = document.getElementById("btnCam");
+            const btnCamText = document.getElementById("btnCamText");
+            const btnCloseCam = document.getElementById("btnCloseCam");
+            const camPreviewBox = document.getElementById("camPreviewBox");
+            const webcamVideo = document.getElementById("webcamVideo");
+            const webcamCanvas = document.getElementById("webcamCanvas");
+            const camCtx = webcamCanvas.getContext("2d");
+            const camDot = document.getElementById("camDot");
+            const camStatusText = document.getElementById("camStatusText");
+            const camHint = document.getElementById("camHint");
+
+            let isAiRunning = false;
+            let cameraInstance = null;
+            let poseInstance = null;
+
+            // Smoothed angles for smooth movement without jitter
+            let currentAngles = {
+                LA: 25, LB: 35,
+                KA: -20, KB: 25
+            };
+
+            btnCam.addEventListener("click", () => {
+                if (isAiRunning) {
+                    stopCameraAI();
+                } else {
+                    startCameraAI();
+                }
+            });
+
+            btnCloseCam.addEventListener("click", () => {
+                stopCameraAI();
+            });
+
+            async function startCameraAI() {
+                if (typeof Pose === "undefined" || typeof Camera === "undefined") {
+                    alert("Sedang memuat library AI MediaPipe, mohon pastikan internet aktif dan coba lagi dalam beberapa detik.");
+                    return;
+                }
+
+                camPreviewBox.classList.add("show");
+                btnCam.classList.add("active");
+                btnCam.innerHTML = '<i class="fas fa-video-slash"></i> <span id="btnCamText">Matikan AI</span>';
+                camStatusText.innerText = "Memulai Kamera...";
+                camDot.classList.remove("active");
+
+                try {
+                    if (!poseInstance) {
+                        poseInstance = new Pose({
+                            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+                        });
+
+                        poseInstance.setOptions({
+                            modelComplexity: 1,
+                            smoothLandmarks: true,
+                            enableSegmentation: false,
+                            minDetectionConfidence: 0.5,
+                            minTrackingConfidence: 0.5
+                        });
+
+                        poseInstance.onResults(onPoseResults);
+                    }
+
+                    cameraInstance = new Camera(webcamVideo, {
+                        onFrame: async () => {
+                            if (isAiRunning && webcamVideo.videoWidth > 0) {
+                                await poseInstance.send({ image: webcamVideo });
+                            }
+                        },
+                        width: 320,
+                        height: 240
+                    });
+
+                    await cameraInstance.start();
+                    isAiRunning = true;
+                    camStatusText.innerText = "Mendeteksi Tubuh...";
+
+                    // Sinkronisasi sudut awal dari wayang di panggung agar tidak terjadi hentakan posisi
+                    const firstWayang = stage.querySelector(".wayang");
+                    if (firstWayang) {
+                        const wLA = firstWayang.querySelector('.tangan.kiri .lengan-atas');
+                        const wLB = firstWayang.querySelector('.tangan.kiri .lengan-bawah');
+                        const wKA = firstWayang.querySelector('.tangan.kanan .lengan-atas');
+                        const wKB = firstWayang.querySelector('.tangan.kanan .lengan-bawah');
+                        if (wLA) currentAngles.LA = getRotation(wLA);
+                        if (wLB) currentAngles.LB = getRotation(wLB);
+                        if (wKA) currentAngles.KA = getRotation(wKA);
+                        if (wKB) currentAngles.KB = getRotation(wKB);
+                    }
+                } catch (err) {
+                    console.error("Camera AI Error:", err);
+                    alert("Gagal mengakses kamera: " + (err.message || "Izin kamera ditolak."));
+                    stopCameraAI();
+                }
+            }
+
+            function stopCameraAI() {
+                isAiRunning = false;
+                if (cameraInstance) {
+                    try { cameraInstance.stop(); } catch(e){}
+                }
+                if (webcamVideo.srcObject) {
+                    webcamVideo.srcObject.getTracks().forEach(track => track.stop());
+                    webcamVideo.srcObject = null;
+                }
+
+                camPreviewBox.classList.remove("show");
+                btnCam.classList.remove("active");
+                btnCam.innerHTML = '<i class="fas fa-video"></i> <span id="btnCamText">Kamera AI</span>';
+                camDot.classList.remove("active");
+                camStatusText.innerText = "Kamera Nonaktif";
+
+                camCtx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+            }
+
+            function onPoseResults(results) {
+                if (!isAiRunning) return;
+
+                camCtx.save();
+                camCtx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+                camCtx.drawImage(results.image, 0, 0, webcamCanvas.width, webcamCanvas.height);
+
+                if (results.poseLandmarks) {
+                    const lm = results.poseLandmarks;
+                    camDot.classList.add("active");
+                    camStatusText.innerText = "Tangan Terdeteksi ✨";
+
+                    // Helper to draw skeleton arms
+                    drawArm(11, 13, 15, lm, "#00e5ff"); // Cyan for front arm
+                    drawArm(12, 14, 16, lm, "#ffd166"); // Gold for back arm
+
+                    // Helper to smooth angles across -180/180 boundary
+                    function smoothAngle(current, target, rate = 0.28) {
+                        let diff = target - current;
+                        while (diff > 180) diff -= 360;
+                        while (diff < -180) diff += 360;
+                        return current + diff * rate;
+                    }
+
+                    // --- MAPPING KE TANGAN DEPAN WAYANG (Sisi Kiri Layar - lm 11, 13, 15) ---
+                    if (lm[11] && lm[13] && lm[11].visibility > 0.4 && lm[13].visibility > 0.4) {
+                        // Inversi dx agar gerak ke kanan/kiri di kamera mirror langsung searah (bukan terbalik)
+                        const dxU = -(lm[13].x - lm[11].x);
+                        const dyU = lm[13].y - lm[11].y;
+                        const angU = Math.atan2(dyU, dxU) * 180 / Math.PI;
+
+                        let targetLA = angU - 90;
+                        while (targetLA > 180) targetLA -= 360;
+                        while (targetLA < -180) targetLA += 360;
+                        targetLA = Math.max(-90, Math.min(140, targetLA));
+
+                        let targetLB = 0;
+                        if (lm[15] && lm[15].visibility > 0.3) {
+                            const dxF = -(lm[15].x - lm[13].x);
+                            const dyF = lm[15].y - lm[13].y;
+                            const angF = Math.atan2(dyF, dxF) * 180 / Math.PI;
+                            let diff = angF - angU;
+                            while (diff > 180) diff -= 360;
+                            while (diff < -180) diff += 360;
+                            // Batas anatomis siku depan: lurus (-10deg) s/d tekuk ke depan (+140deg)
+                            targetLB = Math.max(-10, Math.min(140, diff));
+                        }
+
+                        currentAngles.LA = smoothAngle(currentAngles.LA, targetLA, 0.28);
+                        currentAngles.LB = smoothAngle(currentAngles.LB, targetLB, 0.28);
+                    }
+
+                    // --- MAPPING KE TANGAN BELAKANG WAYANG (Sisi Kanan Layar - lm 12, 14, 16) ---
+                    if (lm[12] && lm[14] && lm[12].visibility > 0.4 && lm[14].visibility > 0.4) {
+                        // Inversi dx agar gerak ke kanan/kiri di kamera mirror langsung searah (bukan terbalik)
+                        const dxU_R = -(lm[14].x - lm[12].x);
+                        const dyU_R = lm[14].y - lm[12].y;
+                        const angU_R = Math.atan2(dyU_R, dxU_R) * 180 / Math.PI;
+
+                        let targetKA = angU_R - 90;
+                        while (targetKA > 180) targetKA -= 360;
+                        while (targetKA < -180) targetKA += 360;
+                        targetKA = Math.max(-90, Math.min(140, targetKA));
+
+                        let targetKB = 0;
+                        if (lm[16] && lm[16].visibility > 0.3) {
+                            const dxF_R = -(lm[16].x - lm[14].x);
+                            const dyF_R = lm[16].y - lm[14].y;
+                            const angF_R = Math.atan2(dyF_R, dxF_R) * 180 / Math.PI;
+                            let diffR = angF_R - angU_R;
+                            while (diffR > 180) diffR -= 360;
+                            while (diffR < -180) diffR += 360;
+                            // Batas anatomis siku belakang: lurus (-10deg) s/d tekuk ke depan (+140deg)
+                            targetKB = Math.max(-10, Math.min(140, diffR));
+                        }
+
+                        currentAngles.KA = smoothAngle(currentAngles.KA, targetKA, 0.28);
+                        currentAngles.KB = smoothAngle(currentAngles.KB, targetKB, 0.28);
+                    }
+
+                    // Terapkan ke semua wayang di panggung
+                    const puppets = stage.querySelectorAll(".wayang");
+                    if (puppets.length === 0) {
+                        camHint.innerText = "Tarik wayang dari laci ke panggung!";
+                    } else {
+                        camHint.innerText = "Gerakkan lengan Anda di depan kamera ✨";
+                        puppets.forEach(wayang => {
+                            const wLA = wayang.querySelector('.tangan.kiri .lengan-atas');
+                            const wLB = wayang.querySelector('.tangan.kiri .lengan-bawah');
+                            const wKA = wayang.querySelector('.tangan.kanan .lengan-atas');
+                            const wKB = wayang.querySelector('.tangan.kanan .lengan-bawah');
+
+                            if (wLA) wLA.style.transform = `rotate(${Math.round(currentAngles.LA)}deg)`;
+                            if (wLB) wLB.style.transform = `rotate(${Math.round(currentAngles.LB)}deg)`;
+                            if (wKA) wKA.style.transform = `rotate(${Math.round(currentAngles.KA)}deg)`;
+                            if (wKB) wKB.style.transform = `rotate(${Math.round(currentAngles.KB)}deg)`;
+                        });
+                    }
+
+                } else {
+                    camDot.classList.remove("active");
+                    camStatusText.innerText = "Mencari Tubuh Manusia...";
+                }
+                camCtx.restore();
+            }
+
+            function drawArm(sIdx, eIdx, wIdx, lm, color) {
+                if (!lm[sIdx] || !lm[eIdx] || !lm[wIdx]) return;
+                const cw = webcamCanvas.width;
+                const ch = webcamCanvas.height;
+
+                camCtx.lineWidth = 4;
+                camCtx.strokeStyle = color;
+                camCtx.fillStyle = color;
+
+                // Garis Bahu -> Siku -> Pergelangan
+                camCtx.beginPath();
+                camCtx.moveTo(lm[sIdx].x * cw, lm[sIdx].y * ch);
+                camCtx.lineTo(lm[eIdx].x * cw, lm[eIdx].y * ch);
+                camCtx.lineTo(lm[wIdx].x * cw, lm[wIdx].y * ch);
+                camCtx.stroke();
+
+                // Titik Sendi
+                [sIdx, eIdx, wIdx].forEach(idx => {
+                    camCtx.beginPath();
+                    camCtx.arc(lm[idx].x * cw, lm[idx].y * ch, 5, 0, 2 * Math.PI);
+                    camCtx.fill();
                 });
             }
         });
