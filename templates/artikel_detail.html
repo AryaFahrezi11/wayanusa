@@ -364,7 +364,7 @@
 
     {% include 'components/chatbot.html' %}
 
-    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}?v=3.5"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const content = document.querySelector(".article-content");
